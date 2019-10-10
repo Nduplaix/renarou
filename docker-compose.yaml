@@ -1,0 +1,25 @@
+version: "3.2"
+
+services:
+  webpack:
+    build:
+      context: docker/node
+    environment:
+      - DOMAIN_NAME=default:${DOMAIN_DEFAULT}
+      - IS_DOCKER=true
+    volumes:
+      - ./:/srv/
+    expose:
+      - "${NODE_PORT}"
+    command: "npm run serve"
+
+  storybook:
+    build:
+      context: docker/node
+    environment:
+      - IS_DOCKER=true
+    volumes:
+      - ./:/srv/
+    expose:
+      - "6006"
+    command: "npm run storybook:serve"
