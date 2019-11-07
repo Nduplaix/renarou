@@ -1,0 +1,17 @@
+@import 'bootstrap/custom';
+@import 'fontawesome/custom';
+@import 'variables';
+
+body {
+  font-family: $wd-font-family-base;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  margin: 0;
+  line-height: 1.5;
+  padding: 0;
+
+  .app {
+    height: 100vh;
+  }
+}
+
