@@ -1,0 +1,102 @@
+/** Bootstrap colors **/
+$wd-primary: #007bff;
+$wd-secondary: #5a6169;
+$wd-danger: #c4183c;
+$wd-info: #00b8d8;
+$wd-success: #17c671;
+$wd-warning: #ffb400;
+$wd-light: #e9ecef;
+$wd-dark: #212529;
+
+/** Global colors **/
+$wd-text: #3d5170;
+$wd-text-light: #818ea3;
+$wd-border-light: #ccd6df;
+$wd-shadow-light: rgba(#818ea3, 0.15);
+$wd-gray-medium: #b2bfd4;
+$wd-white: #ffffff;
+$wd-sidebar-background: #e1e5ea;
+
+/** Font Awesome **/
+$wd-fa-font-path: '~@fortawesome/fontawesome-free/webfonts';
+
+/** Fonts **/
+$wd-font-family-base: Roboto, Helvetica, Arial, sans-serif;
+$wd-headings-font-weight: 500;
+
+/** Font Sizes **/
+$wd-h1-font-size: 24px;
+$wd-h2-font-size: 21px;
+$wd-h3-font-size: 18px;
+$wd-h4-font-size: 16px;
+$wd-base-font-size: 14px;
+$wd-btn-small-font-size: 13px;
+$wd-select-label-font-size: 12px;
+$wd-filter-font-size: 11px;
+$wd-select-desc-font-size: 10px;
+
+/** Margin */
+$wd-margin-1: 5px;
+$wd-margin-2: 10px;
+$wd-margin-3: 20px;
+$wd-margin-4: 30px;
+$wd-margin-5: 40px;
+$wd-margin-6: 50px;
+$wd-margin-large: 28px;
+$wd-margin-medium: 16px;
+$wd-margin-small: 8px;
+$wd-margin-xsmall: 4px;
+
+/** Padding */
+$wd-padding-1: 6px;
+$wd-padding-2: 10px;
+$wd-padding-3: 20px;
+$wd-padding-4: 30px;
+$wd-padding-5: 40px;
+$wd-padding-6: 50px;
+
+/** Width */
+$wd-width-xsmall: 25px;
+$wd-width-small: 50px;
+$wd-input-width: 44px;
+$wd-input-width-large: 64px;
+$wd-width-btn-medium: 150px;
+$wd-popup-content-width-medium: 350px;
+$wd-image-max-width: 63px;
+
+/** Height */
+$wd-height-xsmall: 25px;
+$wd-height-small: 50px;
+$wd-input-height: 33px;
+$wd-select-option-height: 46px;
+$wd-select-option-height-small: 36px;
+$wd-image-max-height: 63px;
+
+/** Border **/
+$wd-border-radius-small: 6px;
+$wd-border-radius-medium: 15px;
+$wd-border-radius-large: 21px;
+$wd-border-radius-left: 4.8px 0 0 4.8px;
+$wd-border-radius-right: 0 4.8px 4.8px 0;
+
+$wd-border-radius-top: 5px 5px 0 0;
+$wd-border-radius-bottom: 0 0 5px 5px;
+
+$wd-border-radius-circle: 50%;
+
+$wd-border-color-light: #495057;
+$wd-border-color-gray-medium: #becad6;
+
+$wd-border-size-small: 1px;
+
+$wd-btn-xlarge: 16px;
+
+$wd-button-large-width: 165px;
+
+/* Icons */
+
+$icon-chevron-path: '../images/icons/chevron.svg';
+
+/* Shadow */
+
+$wd-border-shadow-light: #e0e2e8
