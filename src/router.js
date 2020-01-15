@@ -22,7 +22,7 @@ export default new Router({
       }
     },
     {
-      path: "/products/:subcategory",
+      path: "/products/:subCategory",
       name: "subcategories",
       component: {
         ...List,
