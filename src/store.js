@@ -6,15 +6,45 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    categories: { type: Object, default: () => {} }
+    categories: { type: Object, default: () => {} },
+    currentSubCategory: { type: Object, default: () => {} },
+    currentCategory: { type: Object, default: () => {} },
+    products: { type: Object, default: () => {} },
+    pagination: { type: Object, default: () => {} }
   },
   getters: {
-    getCategories: state => state.categories
+    getCategories: state => state.categories,
+    currentSubCategory: state => state.currentSubCategory,
+    currentCategory: state => state.currentCategory,
+    products: state => state.products,
+    pagination: state => state.pagination
   },
   mutations: {
     setCategories(state, response) {
-      console.log(response.data);
       state.categories = response.data;
+    },
+    setCurrentSubCategory(state, response) {
+      state.currentSubCategory = response.data;
+    },
+    setCurrentCategory(state, response) {
+      state.currentCategory = response.data;
+    },
+    setProducts(state, response) {
+      state.products = response.data["hydra:member"];
+      state.pagination = {
+        next: response.data["hydra:view"]["hydra:next"]
+          ? parseInt(getUrlVars(response.data["hydra:view"]["hydra:next"]).page)
+          : null,
+        previous: response.data["hydra:view"]["hydra:previous"]
+          ? parseInt(getUrlVars(response.data["hydra:view"]["hydra:previous"]).page)
+          : null,
+        max: response.data["hydra:view"]["hydra:last"]
+          ? parseInt(getUrlVars(response.data["hydra:view"]["hydra:last"]).page)
+          : null,
+        current: response.data["hydra:view"]["@id"]
+          ? parseInt(getUrlVars(response.data["hydra:view"]["@id"]).page)
+          : null
+      };
     }
   },
   actions: {
@@ -24,6 +54,55 @@ export default new Vuex.Store({
       } catch (e) {
         console.error(e);
       }
+    },
+    async fetchSubCategory({ commit }, { category, subCategory, page, all }) {
+      try {
+        commit(
+          "setCurrentSubCategory",
+          await productsApi.get(`/sub_categories/${getIdFromSlug(subCategory)}`)
+        );
+        commit(
+          "setCurrentCategory",
+          await productsApi.get(`/categories/${getIdFromSlug(category)}`)
+        );
+        commit(
+          "setProducts",
+          await productsApi.get(
+            `/products?page=${page || 1}&subcategory=${subCategory}&all=${all || false}`
+          )
+        );
+      } catch (e) {
+        console.error(e);
+      }
+    },
+    async fetchCategory({ commit }, { category, page, all }) {
+      try {
+        commit(
+          "setCurrentCategory",
+          await productsApi.get(`/categories/${getIdFromSlug(category)}`)
+        );
+        commit(
+          "setProducts",
+          await productsApi.get(
+            `/products?page=${page || 1}&category=${category}&all=${all || false}`
+          )
+        );
+      } catch (e) {
+        console.error(e);
+      }
     }
   }
 });
+
+function getIdFromSlug(slug) {
+  const subCategory = slug.split("-");
+  return subCategory[subCategory.length - 1];
+}
+
+function getUrlVars(url) {
+  const vars = {};
+  url.replace(/[?&]+([^=&]+)=([^&]*)/gi, (m, key, value) => {
+    vars[key] = value;
+  });
+  return vars;
+}
