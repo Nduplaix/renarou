@@ -22,7 +22,7 @@ export default new Router({
       }
     },
     {
-      path: "/products/:subCategory",
+      path: "/products/:category/:subCategory",
       name: "subcategories",
       component: {
         ...List,
@@ -30,6 +30,20 @@ export default new Router({
         beforeRouteUpdate,
         beforeRouteEnter
       }
+    },
+    {
+      path: "/products/:category",
+      name: "categories",
+      component: {
+        ...List,
+
+        beforeRouteUpdate,
+        beforeRouteEnter
+      }
+    },
+    {
+      path: "/products/:slug",
+      name: "product"
     }
   ]
 });
