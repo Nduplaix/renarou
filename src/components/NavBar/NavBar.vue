@@ -76,9 +76,7 @@ export default {
   },
   methods: {
     isMobile() {
-      return /Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-        navigator.userAgent
-      );
+      return /Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     },
     changeDisplayMenu() {
       this.displayMenu = !this.displayMenu;
@@ -92,5 +90,6 @@ nav {
   position: sticky;
   top: 0;
   z-index: 1000;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.11);
 }
 </style>
