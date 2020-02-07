@@ -10,14 +10,16 @@ export default new Vuex.Store({
     currentSubCategory: { type: Object, default: () => {} },
     currentCategory: { type: Object, default: () => {} },
     products: { type: Object, default: () => {} },
-    pagination: { type: Object, default: () => {} }
+    pagination: { type: Object, default: () => {} },
+    currentProduct: { type: Object, default: () => {} }
   },
   getters: {
     getCategories: state => state.categories,
     currentSubCategory: state => state.currentSubCategory,
     currentCategory: state => state.currentCategory,
     products: state => state.products,
-    pagination: state => state.pagination
+    pagination: state => state.pagination,
+    currentProduct: state => state.currentProduct
   },
   mutations: {
     setCategories(state, response) {
@@ -45,6 +47,9 @@ export default new Vuex.Store({
           ? parseInt(getUrlVars(response.data["hydra:view"]["@id"]).page)
           : null
       };
+    },
+    setCurrentProduct(state, response) {
+      state.currentProduct = response.data;
     }
   },
   actions: {
@@ -90,6 +95,9 @@ export default new Vuex.Store({
       } catch (e) {
         console.error(e);
       }
+    },
+    async fetchCurrentProduct({commit}, {product}) {
+      commit("setCurrentProduct", await productsApi.get(`/products/${getIdFromSlug(product)}`));
     }
   }
 });

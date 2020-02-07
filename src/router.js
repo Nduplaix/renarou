@@ -2,6 +2,7 @@ import Vue from "vue";
 import Router from "vue-router";
 import Home from "./views/Home";
 import List from "./views/List";
+import Product from "./views/Product";
 
 import { beforeRouteEnter, beforeRouteUpdate } from "./lib/routerGuards";
 
@@ -22,7 +23,7 @@ export default new Router({
       }
     },
     {
-      path: "/products/:category/:subCategory",
+      path: "/porduits/:category/:subCategory",
       name: "subcategories",
       component: {
         ...List,
@@ -32,7 +33,7 @@ export default new Router({
       }
     },
     {
-      path: "/products/:category",
+      path: "/produits/:category",
       name: "categories",
       component: {
         ...List,
@@ -42,8 +43,14 @@ export default new Router({
       }
     },
     {
-      path: "/products/:slug",
-      name: "product"
+      path: "/produit/:product",
+      name: "product",
+      component: {
+        ...Product,
+
+        beforeRouteUpdate,
+        beforeRouteEnter
+      }
     }
   ]
 });
