@@ -3,6 +3,7 @@ import App from "./App.vue";
 import router from "./router";
 import store from "./store";
 import "bootstrap";
+import VueScrollTo from "vue-scrollto";
 
 import "./assets/scss/app.scss";
 
@@ -19,6 +20,8 @@ Vue.filter("toCurrency", function(value) {
   });
   return formatter.format(value);
 });
+
+Vue.use(VueScrollTo);
 
 new Vue({
   router,

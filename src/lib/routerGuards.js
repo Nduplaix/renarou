@@ -6,6 +6,8 @@ async function handleRouteChange(to, from, next) {
     await store.dispatch("fetchSubCategory", to.params);
   } else if (to.name === "categories") {
     await store.dispatch("fetchCategory", to.params);
+  } else if (to.name === "product") {
+    await store.dispatch("fetchCurrentProduct", to.params);
   }
 
   next();

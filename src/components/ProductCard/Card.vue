@@ -2,7 +2,7 @@
   <router-link
     :to="{
       name: 'product',
-      params: { slug }
+      params: { product: slug }
     }"
     class="col-md-3 px-4 py-3"
   >
@@ -21,7 +21,7 @@
           <router-link
             :to="{
               name: 'product',
-              params: { slug }
+              params: { product: slug }
             }"
             class="btn btn-info"
           >
