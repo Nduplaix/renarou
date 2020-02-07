@@ -58,16 +58,42 @@
           </div>
         </li>
       </ul>
+      <ul class="navbar-nav mr-0" v-if="!getUserLogged">
+        <li class="nav-item">
+          <button type="button" class="btn btn-outline-primary" @click="$emit('showLogin', true)">Login</button>
+        </li>
+      </ul>
+      <ul class="navbar-nav mr-0" v-else>
+        <li class="nav-item dropdown">
+          <a
+            class="nav-link dropdown-toggle"
+            href="#"
+            id="dropdown-user"
+            role="button"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+          >
+            {{ currentUser.username }}
+          </a>
+          <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdown-user">
+            <a class="dropdown-item" href="#" type="button" @click="logout">
+              Deconnexion
+            </a>
+          </div>
+        </li>
+      </ul>
     </div>
   </nav>
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters, mapMutations } from "vuex";
 
 export default {
   computed: {
-    ...mapGetters(["getCategories"])
+    ...mapGetters(["getCategories"]),
+    ...mapGetters("user", ["currentUser", "getUserLogged"])
   },
   data() {
     return {
@@ -75,6 +101,7 @@ export default {
     };
   },
   methods: {
+    ...mapMutations("user", ["logout"]),
     isMobile() {
       return /Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
         navigator.userAgent
