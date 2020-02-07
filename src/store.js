@@ -11,7 +11,9 @@ export default new Vuex.Store({
     currentCategory: { type: Object, default: () => {} },
     products: { type: Object, default: () => {} },
     pagination: { type: Object, default: () => {} },
-    currentProduct: { type: Object, default: () => {} }
+    currentProduct: { type: Object, default: () => {} },
+    newProducts: { type: Object, default: () => {} },
+    discountProducts: { type: Object, default: () => {} }
   },
   getters: {
     getCategories: state => state.categories,
@@ -19,7 +21,9 @@ export default new Vuex.Store({
     currentCategory: state => state.currentCategory,
     products: state => state.products,
     pagination: state => state.pagination,
-    currentProduct: state => state.currentProduct
+    currentProduct: state => state.currentProduct,
+    newProducts: state => state.newProducts,
+    discountProducts: state => state.discountProducts
   },
   mutations: {
     setCategories(state, response) {
@@ -50,6 +54,12 @@ export default new Vuex.Store({
     },
     setCurrentProduct(state, response) {
       state.currentProduct = response.data;
+    },
+    setNewProducts(state, response) {
+      state.newProducts = response.data;
+    },
+    setDiscountedProducts(state, response) {
+      state.discountProducts = response.data;
     }
   },
   actions: {
@@ -96,8 +106,26 @@ export default new Vuex.Store({
         console.error(e);
       }
     },
-    async fetchCurrentProduct({commit}, {product}) {
-      commit("setCurrentProduct", await productsApi.get(`/products/${getIdFromSlug(product)}`));
+    async fetchCurrentProduct({ commit }, { product }) {
+      try {
+        commit("setCurrentProduct", await productsApi.get(`/products/${getIdFromSlug(product)}`));
+      } catch (e) {
+        console.error(e);
+      }
+    },
+    async fetchNewProducts({ commit }) {
+      try {
+        commit("setNewProducts", await productsApi.get("/products/news"));
+      } catch (e) {
+        console.error(e);
+      }
+    },
+    async fetchDiscountedProducts({ commit }) {
+      try {
+        commit("setDiscountedProducts", await productsApi.get("/products/discount"));
+      } catch (e) {
+        console.error(e);
+      }
     }
   }
 });
