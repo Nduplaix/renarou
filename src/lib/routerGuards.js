@@ -1,4 +1,4 @@
-import store from "../store";
+import store from "../stores/store";
 
 async function handleRouteChange(to, from, next) {
   await store.dispatch("getCategories");
