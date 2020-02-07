@@ -4,9 +4,10 @@
       name: 'product',
       params: { product: slug }
     }"
-    class="col-md-3 px-4 py-3"
+    class="px-4 py-3"
+    :class="isSmall ? 'col-md-2 col-6' : 'col-md-3'"
   >
-    <div class="card">
+    <div class="card" :class="{ small: isSmall }">
       <div
         class="image-hover"
         @mouseover="updateDisplayHover(true)"
@@ -46,7 +47,7 @@ export default {
     discount: { required: true },
     slug: { required: true, type: String },
     createdAt: { required: true },
-    isNew: { required: true }
+    isSmall: { required: false }
   },
   data() {
     return {
@@ -62,6 +63,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import "../../assets/scss/variables";
+
 a,
 a:hover {
   text-decoration: none;
@@ -70,23 +73,43 @@ a:hover {
 
 .card {
   box-shadow: 2px 2px 8px 0 rgba(0, 0, 0, 0.2);
-}
+  border-radius: $wd-border-radius-medium;
+  overflow: hidden;
 
-.image-hover {
-  position: relative;
-
-  &_opacity {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 100;
-    background-color: rgba(255, 255, 255, 0.5);
+  .image-hover {
+    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
-    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.3);
+
+    img {
+      max-height: 500px;
+      width: 100%;
+      max-width: 250px;
+    }
+
+    &_opacity {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 100;
+      background-color: rgba(255, 255, 255, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.3);
+    }
+  }
+
+  &.small {
+    .image-hover {
+      img {
+        max-height: 300px;
+        max-width: 150px;
+      }
+    }
   }
 }
 </style>

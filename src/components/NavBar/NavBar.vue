@@ -1,6 +1,6 @@
 <template>
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="#">Navbar</a>
+    <router-link class="navbar-brand" :to="{ name: 'home' }">Renarou</router-link>
     <button
       class="navbar-toggler"
       type="button"
@@ -76,7 +76,7 @@ export default {
   },
   methods: {
     isMobile() {
-      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+      return /Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
         navigator.userAgent
       );
     },
