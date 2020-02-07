@@ -1,5 +1,5 @@
 <template>
-  <div class="img-list-content mx-2" @click="updateImage">
+  <div class="img-list-content mx-2 rounded-circle" @click="updateImage">
     <img :src="imageLink" :alt="imageAlt" />
   </div>
 </template>
@@ -26,6 +26,7 @@ export default {
   background-color: #fff;
   display: flex;
   justify-content: center;
+  overflow: hidden;
   img {
     max-height: 100px;
     max-width: 100px;

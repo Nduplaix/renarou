@@ -1,6 +1,10 @@
 <template>
   <div v-if="previous !== null || next !== null || display">
-    <nav class="d-flex justify-content-center" aria-label="Page navigation">
+    <nav
+      class="d-flex justify-content-center"
+      aria-label="Page navigation"
+      v-if="previous !== null || next !== null"
+    >
       <ul class="pagination">
         <li class="page-item" :class="{ disabled: previous === null }">
           <span
@@ -23,8 +27,8 @@
         </li>
       </ul>
     </nav>
-    <button class="btn btn-info" @click="loadPage(1, true)" v-if="!expanded">Afficher tout</button>
-    <button class="btn btn-info" @click="loadPage(1, false)" v-if="expanded">Réduire</button>
+    <button class="btn btn-secondary" @click="loadPage(1, true)" v-if="!expanded">Afficher tout</button>
+    <button class="btn btn-secondary" @click="loadPage(1, false)" v-if="expanded">Réduire</button>
   </div>
 </template>
 
@@ -44,7 +48,9 @@ export default {
   },
   methods: {
     loadPage(page, all) {
-      this.expanded = !this.expanded;
+      if (typeof all !== "undefined") {
+        this.expanded = !this.expanded;
+      }
       this.$emit("loadPage", { page, all });
     }
   }
