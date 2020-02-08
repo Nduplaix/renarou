@@ -67,6 +67,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import "../../assets/scss/variables";
+
 .image-list {
   width: 100%;
   position: relative;
@@ -87,12 +89,14 @@ export default {
 
   .slide {
     position: absolute;
-    height: 100%;
+    height: 30px;
     width: 30px;
     z-index: 10;
     display: flex;
     justify-content: center;
     align-items: center;
+    border-radius: 50%;
+    background-color: rgba($wd-primary, 0.4);
     &--right {
       right: 0;
     }
@@ -100,7 +104,7 @@ export default {
       left: 0;
     }
     &:hover {
-      background-color: rgba(255, 255, 255, 0.4);
+      background-color: rgba($wd-primary, 0.8);
     }
   }
 }

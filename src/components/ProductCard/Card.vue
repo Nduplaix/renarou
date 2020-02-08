@@ -24,7 +24,7 @@
               name: 'product',
               params: { product: slug }
             }"
-            class="btn btn-info"
+            class="btn btn-secondary"
           >
             <i class="fas fa-search"></i> Voir plus
           </router-link>

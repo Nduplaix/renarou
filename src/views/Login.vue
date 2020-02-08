@@ -30,12 +30,12 @@
             v-model="password"
           />
         </div>
-        <button type="submit" id="submit" class="popin-btn btn btn-success btn-block">
+        <button type="submit" id="submit" class="popin-btn btn btn-primary btn-block">
           Connexion
         </button>
         <button
           type="button"
-          class="popin-btn btn btn-danger btn-block"
+          class="popin-btn btn btn-secondary btn-block"
           @click="$emit('hideLogin', false)"
         >
           Retour

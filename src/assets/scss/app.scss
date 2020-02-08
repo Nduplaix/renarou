@@ -19,6 +19,10 @@ body {
     .disabled {
       cursor: not-allowed;
     }
+
+    .btn-primary, .btn-secondary {
+      color: $wd-white;
+    }
   }
 }
 
