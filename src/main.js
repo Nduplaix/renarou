@@ -9,6 +9,17 @@ import "./assets/scss/app.scss";
 
 Vue.config.productionTip = false;
 
+Vue.mixin({
+  methods: {
+    isNewProduct: function (createdAt) {
+      let today = new Date();
+      let lastWeek = new Date(today.getTime() - 14 * 24 * 60 * 60 * 1000);
+      let newCreatedAt = new Date(createdAt);
+      return newCreatedAt > lastWeek;
+    }
+  }
+});
+
 Vue.filter("toCurrency", function(value) {
   if (typeof value !== "number") {
     return value;

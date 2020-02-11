@@ -17,7 +17,7 @@
           <discount-tag v-if="discount && discount !== 0">
             - {{ discount }} %
           </discount-tag>
-          <new-tag v-if="isNew" />
+          <new-tag v-if="isNewProduct(createdAt)" />
         </div>
         <img :src="image.link" :alt="image.alt" class="card-img-top" />
         <div
@@ -38,11 +38,7 @@
       </div>
       <div class="card-body">
         <span class="h5 card-title">{{ label }}</span>
-        <div class="card-text" v-if="discount && discount !== 0">
-          <span class="old-price">{{ price | toCurrency }}</span>
-          <span class="new-price">{{ discountedPrice | toCurrency }}</span>
-        </div>
-        <div class="card-text" v-else>{{ price | toCurrency }}</div>
+        <product-price class="card-text" :discount="discount" :price="price" />
       </div>
     </div>
   </router-link>
@@ -50,11 +46,13 @@
 
 <script>
 import { DiscountTag, NewTag } from "../Tags";
+import { ProductPrice } from "../Product";
 
 export default {
   components: {
     DiscountTag,
-    NewTag
+    NewTag,
+    ProductPrice
   },
   props: {
     image: { required: true, type: Object },
@@ -69,17 +67,6 @@ export default {
     return {
       displayHover: false
     };
-  },
-  computed: {
-    isNew() {
-      let today = new Date();
-      let lastWeek = new Date(today.getTime() - 14 * 24 * 60 * 60 * 1000);
-      let createdAt = new Date(this.createdAt);
-      return createdAt > lastWeek;
-    },
-    discountedPrice() {
-      return this.price - this.discount * this.price / 100;
-    }
   },
   methods: {
     updateDisplayHover(show) {
@@ -135,13 +122,6 @@ a:hover {
   .card-body {
     .card-text {
       font-weight: 700;
-      .old-price {
-        text-decoration: line-through;
-      }
-      .new-price {
-        color: $wd-primary;
-        margin-left: 5px;
-      }
     }
   }
 

@@ -16,7 +16,6 @@
         :image="product.images[0]"
         :price="product.price"
         :discount="product.discount"
-        :isNew="product.isNew"
         :createdAt="product.createdAt"
         :slug="product.slug"
       />
