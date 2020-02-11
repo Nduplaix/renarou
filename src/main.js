@@ -16,7 +16,8 @@ Vue.filter("toCurrency", function(value) {
   let formatter = new Intl.NumberFormat("fr-FR", {
     style: "currency",
     currency: "EUR",
-    minimumFractionDigits: 0
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
   });
   return formatter.format(value);
 });

@@ -13,6 +13,12 @@
         @mouseover="updateDisplayHover(true)"
         @mouseleave="updateDisplayHover(false)"
       >
+        <div class="tags">
+          <discount-tag v-if="discount && discount !== 0">
+            - {{ discount }} %
+          </discount-tag>
+          <new-tag v-if="isNew" />
+        </div>
         <img :src="image.link" :alt="image.alt" class="card-img-top" />
         <div
           class="image-hover_opacity"
@@ -32,14 +38,24 @@
       </div>
       <div class="card-body">
         <span class="h5 card-title">{{ label }}</span>
-        <div class="card-text">{{ price | toCurrency }}</div>
+        <div class="card-text" v-if="discount && discount !== 0">
+          <span class="old-price">{{ price | toCurrency }}</span>
+          <span class="new-price">{{ discountedPrice | toCurrency }}</span>
+        </div>
+        <div class="card-text" v-else>{{ price | toCurrency }}</div>
       </div>
     </div>
   </router-link>
 </template>
 
 <script>
+import { DiscountTag, NewTag } from "../Tags";
+
 export default {
+  components: {
+    DiscountTag,
+    NewTag
+  },
   props: {
     image: { required: true, type: Object },
     label: { required: true, type: String },
@@ -53,6 +69,17 @@ export default {
     return {
       displayHover: false
     };
+  },
+  computed: {
+    isNew() {
+      let today = new Date();
+      let lastWeek = new Date(today.getTime() - 14 * 24 * 60 * 60 * 1000);
+      let createdAt = new Date(this.createdAt);
+      return createdAt > lastWeek;
+    },
+    discountedPrice() {
+      return this.price - this.discount * this.price / 100;
+    }
   },
   methods: {
     updateDisplayHover(show) {
@@ -74,18 +101,19 @@ a:hover {
 .card {
   box-shadow: 2px 2px 8px 0 rgba(0, 0, 0, 0.2);
   border-radius: $wd-border-radius-medium;
-  overflow: hidden;
 
   .image-hover {
     position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
+    border-radius: $wd-border-radius-medium;
 
     img {
       max-height: 500px;
       width: 100%;
       max-width: 250px;
+      border-radius: $wd-border-radius-medium $wd-border-radius-medium 0 0;
     }
 
     &_opacity {
@@ -100,6 +128,20 @@ a:hover {
       justify-content: center;
       align-items: center;
       box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.3);
+      border-radius: $wd-border-radius-medium $wd-border-radius-medium 0 0;
+    }
+  }
+
+  .card-body {
+    .card-text {
+      font-weight: 700;
+      .old-price {
+        text-decoration: line-through;
+      }
+      .new-price {
+        color: $wd-primary;
+        margin-left: 5px;
+      }
     }
   }
 
