@@ -76,21 +76,6 @@ export default {
 @import "../assets/scss/_variables.scss";
 
 .login {
-  .form-group {
-    display: flex;
-    flex-direction: column;
-
-    label {
-      font-size: $wd-h2-font-size;
-      font-weight: $wd-headings-font-weight;
-      color: $wd-border-color-light;
-    }
-    input {
-      height: 40px;
-      border: solid 1px $wd-gray-medium;
-      border-radius: $wd-border-radius-small;
-    }
-  }
   .popin-btn {
     margin-top: $wd-margin-large;
   }

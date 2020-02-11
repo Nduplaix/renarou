@@ -60,7 +60,18 @@
       </ul>
       <ul class="navbar-nav mr-0" v-if="!getUserLogged">
         <li class="nav-item">
-          <button type="button" class="btn btn-outline-primary" @click="$emit('showLogin', true)">Login</button>
+          <button type="button" class="btn btn-outline-primary" @click="$emit('showLogin', true)">
+            Login
+          </button>
+        </li>
+        <li class="nav-item">
+          <button
+            type="button"
+            class="btn btn-outline-primary"
+            @click="$emit('showRegister', true)"
+          >
+            Register
+          </button>
         </li>
       </ul>
       <ul class="navbar-nav mr-0" v-else>
@@ -74,7 +85,7 @@
             aria-haspopup="true"
             aria-expanded="false"
           >
-            {{ currentUser.username }}
+            {{ currentUser.firstname }} {{currentUser.lastname}}
           </a>
           <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdown-user">
             <a class="dropdown-item" href="#" type="button" @click="logout">

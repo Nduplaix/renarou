@@ -46,6 +46,27 @@ const actions = {
       commit("setUser", token);
     }
   },
+
+  async register({ dispatch }, { email, password, firstName, lastName }) {
+    await productsApi.post("/create_user", {
+      email: email,
+      plainPassword: password,
+      firstName: firstName,
+      lastName: lastName
+    });
+    dispatch("getAuthToken", { username: email, password });
+  },
+
+  async createAddress({ getters }, { number, streetType, street, city, postalCode }) {
+    await productsApi.post("/addresses", {
+      number,
+      streetType,
+      street,
+      city,
+      postalCode,
+      user: `/api/users/${getters.currentUser.id}`
+    });
+  }
 };
 
 export default { namespaced: true, actions, state, mutations, getters };
