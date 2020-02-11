@@ -1,22 +1,28 @@
 <template>
   <div class="carousel container">
-    <div class="img-content">
+    <div class="img-content" @click="zoom">
       <img :src="currentImage.link" :alt="currentImage.alt" />
     </div>
     <image-list class="mt-2" :images="images" @updateImage="updateImage" />
+    <pop-up v-if="isZoom">
+      <img :src="currentImage.link" :alt="currentImage.alt" class="image-zoom" @click="zoom(false)"/>
+    </pop-up>
   </div>
 </template>
 
 <script>
 import ImageList from "./ImageList";
+import PopUp from "../PopUp/PopUp";
 
 export default {
   components: {
     ImageList,
+    PopUp
   },
   data() {
     return {
-      currentImage: this.images[0]
+      currentImage: this.images[0],
+      isZoom: false
     };
   },
   props: {
@@ -25,6 +31,9 @@ export default {
   methods: {
     updateImage(index) {
       this.currentImage = this.images[index];
+    },
+    zoom(toShow = true) {
+      this.isZoom = toShow;
     }
   }
 };
@@ -38,6 +47,7 @@ export default {
   align-items: center;
 
   .img-content {
+    cursor: zoom-in;
     background-color: white;
     width: 100%;
     max-height: 400px;
@@ -49,6 +59,11 @@ export default {
       max-width: 100%;
       max-height: 400px;
     }
+  }
+  .image-zoom {
+    cursor: zoom-out;
+    max-width: 100%;
+    height: 700px;
   }
 }
 </style>
