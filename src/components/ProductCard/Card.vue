@@ -32,7 +32,7 @@
       </div>
       <div class="card-body">
         <span class="h5 card-title">{{ label }}</span>
-        <div class="card-text">Prix: {{ price | toCurrency }}</div>
+        <div class="card-text">{{ price | toCurrency }}</div>
       </div>
     </div>
   </router-link>
