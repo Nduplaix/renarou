@@ -14,7 +14,8 @@ export default new Vuex.Store({
     pagination: { type: Object, default: () => {} },
     currentProduct: { type: Object, default: () => {} },
     newProducts: { type: Object, default: () => {} },
-    discountProducts: { type: Object, default: () => {} }
+    discountProducts: { type: Object, default: () => {} },
+    banners: { type: Object, default: () => {} }
   },
   getters: {
     getCategories: state => state.categories,
@@ -24,7 +25,8 @@ export default new Vuex.Store({
     pagination: state => state.pagination,
     currentProduct: state => state.currentProduct,
     newProducts: state => state.newProducts,
-    discountProducts: state => state.discountProducts
+    discountProducts: state => state.discountProducts,
+    banners: state => state.banners
   },
   mutations: {
     setCategories(state, response) {
@@ -61,6 +63,9 @@ export default new Vuex.Store({
     },
     setDiscountedProducts(state, response) {
       state.discountProducts = response.data;
+    },
+    setBanners(state, response) {
+      state.banners = response.data;
     }
   },
   actions: {
@@ -124,6 +129,13 @@ export default new Vuex.Store({
     async fetchDiscountedProducts({ commit }) {
       try {
         commit("setDiscountedProducts", await productsApi.get("/products/discount"));
+      } catch (e) {
+        console.error(e);
+      }
+    },
+    async fetchBanners({ commit }) {
+      try {
+        commit("setBanners", await productsApi.get("/banners"));
       } catch (e) {
         console.error(e);
       }

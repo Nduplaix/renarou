@@ -11,6 +11,7 @@ async function handleRouteChange(to, from, next) {
   } else if (to.name === "home") {
     await store.dispatch("fetchNewProducts");
     await store.dispatch("fetchDiscountedProducts");
+    await store.dispatch("fetchBanners");
   }
 
   next();
