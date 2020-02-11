@@ -6,7 +6,17 @@
       </div>
       <div class="col-md-6 mt-5 mt-md-0">
         <h1>{{ currentProduct.label }}</h1>
-        <p><b>{{ currentProduct.price|toCurrency }}</b></p>
+        <div class="tags tags--static mb-3">
+          <new-tag v-if="isNewProduct(currentProduct.createdAt)" />
+          <discount-tag v-if="currentProduct.discount && currentProduct.discount !== 0">
+            - {{ currentProduct.discount }} %
+          </discount-tag>
+        </div>
+        <product-price
+          class="price"
+          :discount="currentProduct.discount"
+          :price="currentProduct.price"
+        />
         <div v-html="currentProduct.description"></div>
         <hr>
         <div class="stock">
@@ -58,12 +68,17 @@
 <script>
 import { Carousel } from "../components/Carousel";
 import { InputNumber } from "../components/Inputs";
+import { ProductPrice } from "../components/Product";
+import { NewTag, DiscountTag } from "../components/Tags";
 import { mapGetters } from "vuex";
 
 export default {
   components: {
     Carousel,
-    InputNumber
+    InputNumber,
+    ProductPrice,
+    NewTag,
+    DiscountTag
   },
   computed: {
     ...mapGetters(["currentProduct"])
@@ -103,5 +118,8 @@ export default {
 .quantity-select {
   display: flex;
   justify-content: center;
+}
+.price {
+  font-weight: 700;
 }
 </style>
