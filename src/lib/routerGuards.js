@@ -1,7 +1,6 @@
 import store from "../stores/store";
 
 async function handleRouteChange(to, from, next) {
-  await store.dispatch("getCategories");
   if (to.name === "subcategories") {
     await store.dispatch("fetchSubCategory", to.params);
   } else if (to.name === "categories") {
@@ -12,6 +11,8 @@ async function handleRouteChange(to, from, next) {
     await store.dispatch("fetchNewProducts");
     await store.dispatch("fetchDiscountedProducts");
     await store.dispatch("fetchBanners");
+  } else if (to.name === "user-profile") {
+    // await store.dispatch();
   }
 
   next();

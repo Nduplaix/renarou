@@ -9,7 +9,7 @@
       aria-controls="navbarSupportedContent"
       aria-expanded="false"
       aria-label="Toggle navigation"
-      @click="displayMenu = !displayMenu"
+      @click="changeDisplayMenu"
     >
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -85,9 +85,31 @@
             aria-haspopup="true"
             aria-expanded="false"
           >
-            {{ currentUser.firstname }} {{currentUser.lastname}}
+            Mon compte
           </a>
-          <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdown-user">
+          <div
+            class="dropdown-menu dropdown-menu-right"
+            aria-labelledby="dropdown-user"
+            v-if="isMobile()"
+          >
+            <router-link
+              class="dropdown-item"
+              v-for="(link, index) in profileLinks"
+              :key="index"
+              :to="{ name: link.name }"
+            >
+              {{ link.label }}
+            </router-link>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="#" type="button" @click="logout">
+              Deconnexion
+            </a>
+          </div>
+          <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdown-user" v-else>
+            <router-link class="dropdown-item" :to="{ name: 'user-profile' }">
+              Mon profile
+            </router-link>
+            <div class="dropdown-divider"></div>
             <a class="dropdown-item" href="#" type="button" @click="logout">
               Deconnexion
             </a>
@@ -108,14 +130,18 @@ export default {
   },
   data() {
     return {
-      displayMenu: !this.isMobile()
+      displayMenu: !this.isMobile(),
+      profileLinks: [
+        { name: "user-profile", label: "Mon profil" },
+        { name: "edit-profile", label: "Modifier mon profil" },
+        { name: "edit-password", label: "Modifier mon mot de passe" },
+        { name: "commandes", label: "Mes commandes" }
+      ]
     };
   },
   methods: {
     ...mapMutations("user", ["logout"]),
-    isMobile() {
-      return /Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    },
+
     changeDisplayMenu() {
       this.displayMenu = !this.displayMenu;
     }
@@ -124,10 +150,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import "../../assets/scss/variables";
 nav {
   position: sticky;
   top: 0;
   z-index: 1000;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.11);
+  min-height: $wd-navbar-height;
 }
 </style>
