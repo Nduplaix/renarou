@@ -19,6 +19,14 @@ Vue.mixin({
     },
     isMobile() {
       return /Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    },
+    userLinks() {
+      return [
+        { name: "user-profile", label: "Mon profil" },
+        { name: "edit-profile", label: "Modifier mon profil" },
+        { name: "edit-password", label: "Modifier mon mot de passe" },
+        { name: "commandes", label: "Mes commandes" }
+      ];
     }
   }
 });

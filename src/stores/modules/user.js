@@ -35,7 +35,6 @@ const mutations = {
     state.token = {};
     state.userLogged = false;
     localStorage.removeItem("currentToken");
-    location.reload();
   }
 };
 
@@ -86,6 +85,18 @@ const actions = {
     });
 
     dispatch("fetchCurrentUser");
+  },
+
+  async updateUser({commit}, {id, email, firstName, lastName}) {
+    const response = await productsApi.patch(`/users/${id}`, {
+      email,
+      firstName,
+      lastName
+    });
+
+    console.log(response);
+
+    commit("setUser", response);
   }
 };
 

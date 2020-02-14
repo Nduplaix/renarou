@@ -1,10 +1,10 @@
 <template>
   <div class="profile">
     <aside v-if="!isMobile()">
-      <div class="list-group mt-3">
+      <div class="list-group mt-5">
         <router-link
           class="list-group-item list-group-item-action"
-          v-for="(link, index) in links"
+          v-for="(link, index) in userLinks()"
           :key="index"
           :to="{ name: link.name }"
           :class="{ active: link.name === $route.name }"
@@ -13,7 +13,7 @@
         </router-link>
       </div>
     </aside>
-    <div class="profile__content" :class="{ 'profile__content--mobile container': isMobile() }">
+    <div class="profile__content mt-5" :class="{ 'profile__content--mobile container': isMobile() }">
       <router-view />
     </div>
   </div>
@@ -23,23 +23,10 @@
 import { mapGetters } from "vuex";
 
 export default {
-  computed: {
-    ...mapGetters("user", ["currentUser"])
-  },
   mounted() {
     if (!localStorage.getItem("currentToken")) {
       this.$router.push({ name: "404" });
     }
-  },
-  data() {
-    return {
-      links: [
-        { name: "user-profile", label: "Mon profil" },
-        { name: "edit-profile", label: "Modifier mon profil" },
-        { name: "edit-password", label: "Modifier mon mot de passe" },
-        { name: "commandes", label: "Mes commandes" }
-      ]
-    };
   }
 };
 </script>
@@ -57,9 +44,10 @@ export default {
   }
   &__content {
     margin-left: $wd-aside-width;
-    padding: $wd-padding-3;
+    padding: 0 $wd-padding-3;
     display: flex;
     align-items: center;
+    justify-content: center;
     &--mobile {
       margin-left: 0;
     }
