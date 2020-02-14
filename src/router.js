@@ -8,6 +8,7 @@ import { beforeRouteEnter, beforeRouteUpdate } from "./lib/routerGuards";
 import UserProfile from "./views/UserProfile/UserProfile";
 import Profile from "./views/UserProfile/Profile";
 import Error404 from "./views/Error404";
+import EditProfile from "./views/UserProfile/EditProfile";
 
 Vue.use(Router);
 
@@ -57,6 +58,7 @@ export default new Router({
     },
     {
       path: "/mon-profil",
+      name: "profile",
       component: {
         ...Profile,
 
@@ -76,7 +78,8 @@ export default new Router({
         },
         {
           path: "modifier",
-          name: "edit-profile"
+          name: "edit-profile",
+          component: EditProfile
         },
         {
           path: "modifier-mot-de-passe",

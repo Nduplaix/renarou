@@ -94,14 +94,14 @@
           >
             <router-link
               class="dropdown-item"
-              v-for="(link, index) in profileLinks"
+              v-for="(link, index) in userLinks()"
               :key="index"
               :to="{ name: link.name }"
             >
               {{ link.label }}
             </router-link>
             <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="#" type="button" @click="logout">
+            <a class="dropdown-item" href="#" type="button" @click="logoutAction">
               Deconnexion
             </a>
           </div>
@@ -110,7 +110,7 @@
               Mon profile
             </router-link>
             <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="#" type="button" @click="logout">
+            <a class="dropdown-item" href="#" type="button" @click="logoutAction">
               Deconnexion
             </a>
           </div>
@@ -131,16 +131,17 @@ export default {
   data() {
     return {
       displayMenu: !this.isMobile(),
-      profileLinks: [
-        { name: "user-profile", label: "Mon profil" },
-        { name: "edit-profile", label: "Modifier mon profil" },
-        { name: "edit-password", label: "Modifier mon mot de passe" },
-        { name: "commandes", label: "Mes commandes" }
-      ]
     };
   },
   methods: {
     ...mapMutations("user", ["logout"]),
+    async logoutAction() {
+      await this.logout();
+
+      if (this.$route.matched[0].name === "profile") {
+        this.$router.push({ name: "home" });
+      }
+    },
 
     changeDisplayMenu() {
       this.displayMenu = !this.displayMenu;
