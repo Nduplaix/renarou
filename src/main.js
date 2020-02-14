@@ -11,11 +11,14 @@ Vue.config.productionTip = false;
 
 Vue.mixin({
   methods: {
-    isNewProduct: function (createdAt) {
+    isNewProduct(createdAt) {
       let today = new Date();
       let lastWeek = new Date(today.getTime() - 14 * 24 * 60 * 60 * 1000);
       let newCreatedAt = new Date(createdAt);
       return newCreatedAt > lastWeek;
+    },
+    isMobile() {
+      return /Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     }
   }
 });

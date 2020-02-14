@@ -6,44 +6,62 @@ function parseToken(token) {
 
 const state = {
   userLogged: false,
+  token: {},
   currentUser: {}
 };
 
 const getters = {
   currentUser: st => st.currentUser,
+  getToken: state => state.token,
   getUserLogged: st => st.userLogged,
   username: ({ currentUser }) => currentUser.firstName + " " + currentUser.lastName
 };
 
 const mutations = {
-  setUser(state, token) {
+  setToken(state, token) {
     state.userLogged = true;
     const payload = parseToken(token);
-    localStorage.setItem("currentUser", token);
+    localStorage.setItem("currentToken", token);
     setJwt(token);
-    state.currentUser = payload;
+    state.token = payload;
+  },
+
+  setUser(state, response) {
+    state.currentUser = response.data;
   },
 
   logout(state) {
     state.currentUser = {};
+    state.token = {};
     state.userLogged = false;
-    localStorage.removeItem("currentUser");
+    localStorage.removeItem("currentToken");
+    location.reload();
   }
 };
 
 const actions = {
-  async getAuthToken({ commit }, { username, password }) {
+  async getAuthToken({ commit, dispatch }, { username, password }) {
     const response = await productsApi.post("/login_check", {
       username,
       password
     });
-    commit("setUser", response.data.token);
+    commit("setToken", response.data.token);
+    dispatch("fetchCurrentUser");
   },
 
-  setStorageToken({ commit }) {
-    const token = localStorage.getItem("currentUser");
+  async fetchCurrentUser({ commit, getters }) {
+    try {
+      commit("setUser", await productsApi.get(`/users/${getters.getToken.id}`));
+    } catch (e) {
+      console.error(e);
+    }
+  },
+
+  setStorageToken({ commit, dispatch }) {
+    const token = localStorage.getItem("currentToken");
     if (token) {
-      commit("setUser", token);
+      commit("setToken", token);
+      dispatch("fetchCurrentUser");
     }
   },
 
@@ -57,7 +75,7 @@ const actions = {
     dispatch("getAuthToken", { username: email, password });
   },
 
-  async createAddress({ getters }, { number, streetType, street, city, postalCode }) {
+  async createAddress({ getters, dispatch }, { number, streetType, street, city, postalCode }) {
     await productsApi.post("/addresses", {
       number,
       streetType,
@@ -66,6 +84,8 @@ const actions = {
       postalCode,
       user: `/api/users/${getters.currentUser.id}`
     });
+
+    dispatch("fetchCurrentUser");
   }
 };
 

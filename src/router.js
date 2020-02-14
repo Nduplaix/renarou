@@ -5,6 +5,9 @@ import List from "./views/List";
 import Product from "./views/Product";
 
 import { beforeRouteEnter, beforeRouteUpdate } from "./lib/routerGuards";
+import UserProfile from "./views/UserProfile/UserProfile";
+import Profile from "./views/UserProfile/Profile";
+import Error404 from "./views/Error404";
 
 Vue.use(Router);
 
@@ -51,6 +54,44 @@ export default new Router({
         beforeRouteUpdate,
         beforeRouteEnter
       }
+    },
+    {
+      path: "/mon-profil",
+      component: {
+        ...Profile,
+
+        beforeRouteUpdate,
+        beforeRouteEnter
+      },
+      children: [
+        {
+          path: "/",
+          name: "user-profile",
+          component: {
+            ...UserProfile,
+
+            beforeRouteUpdate,
+            beforeRouteEnter
+          }
+        },
+        {
+          path: "modifier",
+          name: "edit-profile"
+        },
+        {
+          path: "modifier-mot-de-passe",
+          name: "edit-password"
+        },
+        {
+          path: "commandes",
+          name: "commandes"
+        }
+      ]
+    },
+    {
+      path: "/404",
+      name: "404",
+      component: Error404
     }
   ]
 });

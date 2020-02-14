@@ -16,10 +16,7 @@
         :key="index"
         :class="{ active: index === 0 }"
       >
-        <img :src="image.link" class="d-block w-100" alt="image.description" />
-        <div class="carousel-caption d-none d-md-block">
-          <p>{{ image.description }}</p>
-        </div>
+        <img :src="image.link" class="d-block w-100" :alt="image.description" />
       </div>
     </div>
     <a
@@ -56,10 +53,10 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.carousel-caption {
-  background-color: rgba(0, 0, 0, 0.5);
-  bottom: 0;
-  left: 0;
-  width: 100%;
+.carousel {
+  max-height: 400px;
+  img {
+    max-height: 400px;
+  }
 }
 </style>
