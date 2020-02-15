@@ -1,15 +1,11 @@
+import { beforeRouteEnter, beforeRouteUpdate } from "./lib/routerGuards";
 import Vue from "vue";
 import Router from "vue-router";
 import Home from "./views/Home";
 import List from "./views/List";
 import Product from "./views/Product";
-
-import { beforeRouteEnter, beforeRouteUpdate } from "./lib/routerGuards";
-import UserProfile from "./views/UserProfile/UserProfile";
-import Profile from "./views/UserProfile/Profile";
+import { Addresses, EditPassword, EditProfile, Profile, UserProfile } from "./views/UserProfile";
 import Error404 from "./views/Error404";
-import EditProfile from "./views/UserProfile/EditProfile";
-import EditPassword from "./views/UserProfile/EditPassword";
 
 Vue.use(Router);
 
@@ -86,6 +82,11 @@ export default new Router({
           path: "modifier-mot-de-passe",
           name: "edit-password",
           component: EditPassword
+        },
+        {
+          path: "adresses",
+          name: "my-addresses",
+          component: Addresses
         },
         {
           path: "commandes",

@@ -25,6 +25,7 @@ Vue.mixin({
         { name: "user-profile", label: "Mon profil" },
         { name: "edit-profile", label: "Modifier mon profil" },
         { name: "edit-password", label: "Modifier mon mot de passe" },
+        { name: "my-addresses", label: "Gérer mes adresses" },
         { name: "commandes", label: "Mes commandes" }
       ];
     }

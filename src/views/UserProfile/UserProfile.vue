@@ -22,37 +22,19 @@
     </div>
     <div class="address mt-3">
       <span class="h2">Adresses</span>
-      <table class="address__table user-profile__table mt-3">
-        <tbody>
-          <tr v-for="(address, index) in currentUser.addresses" :key="index">
-            <th>Adresse n°{{ index + 1 }}</th>
-            <td>
-              {{ address.number }} {{ address.streetType }} {{ address.street }},
-              {{ address.postalCode }} {{ address.city }}
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <addresses-list :addresses="currentUser.addresses" />
     </div>
   </div>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
+import AddressesList from "../../components/Addresses/AddressesList";
+
 export default {
+  components: { AddressesList },
   computed: {
     ...mapGetters("user", ["currentUser"])
   }
 };
 </script>
-
-<style lang="scss" scoped>
-@import "../../assets/scss/variables";
-.user-profile {
-  &__table {
-    th {
-      padding-right: $wd-padding-3;
-    }
-  }
-}
-</style>
