@@ -94,9 +94,21 @@ const actions = {
       lastName
     });
 
-    console.log(response);
+    commit("setUser", response);
+  },
+
+  async updatePassword({ commit }, { id, plainPassword }) {
+    const response = await productsApi.patch(`/users/${id}`, {
+      plainPassword
+    });
 
     commit("setUser", response);
+  },
+
+  async checkPassword({}, { id, plainPassword }) {
+    await productsApi.post(`/users/${id}`, {
+      plainPassword
+    });
   }
 };
 

@@ -9,6 +9,7 @@ import UserProfile from "./views/UserProfile/UserProfile";
 import Profile from "./views/UserProfile/Profile";
 import Error404 from "./views/Error404";
 import EditProfile from "./views/UserProfile/EditProfile";
+import EditPassword from "./views/UserProfile/EditPassword";
 
 Vue.use(Router);
 
@@ -83,7 +84,8 @@ export default new Router({
         },
         {
           path: "modifier-mot-de-passe",
-          name: "edit-password"
+          name: "edit-password",
+          component: EditPassword
         },
         {
           path: "commandes",
