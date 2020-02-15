@@ -1,7 +1,7 @@
 <template>
   <div class="popin">
-    <div class="popin-dialog">
-      <span class="h1">Informations de livraison</span>
+    <div class="popin-dialog text-center">
+      <span class="h1"><slot>Informations de livraison</slot></span>
       <form @submit.prevent="addressSubmit">
         <div class="alert alert-danger mt-3" v-if="addressErrors.length !== 0">
           <div v-for="(message, index) in addressErrors" :key="index">
@@ -9,19 +9,19 @@
           </div>
         </div>
         <div class="form-row mt-3">
-          <div class="col-3">
+          <div class="col-md-3">
             <label for="number">numéro</label>
             <input
               type="text"
               class="form-control"
               placeholder="numéro"
-              v-model="number"
+              v-model="internalNumber"
               id="number"
             />
           </div>
-          <div class="col-3">
+          <div class="col-md-3">
             <label for="streetType">type de voie</label>
-            <select class="form-control" v-model="streetTypeSelected" id="streetType">
+            <select class="form-control" v-model="internalStreetTypeSelected" id="streetType">
               <option v-for="(type, index) in streetType" :key="index">{{ type }}</option>
             </select>
           </div>
@@ -31,25 +31,31 @@
               type="text"
               class="form-control"
               placeholder="voie"
-              v-model="street"
+              v-model="internalStreet"
               id="street"
             />
           </div>
         </div>
         <div class="form-row mt-3">
-          <div class="col-4">
+          <div class="col-md-4">
             <label for="postalCode">Code postal</label>
             <input
               type="text"
               placeholder="code postal"
               id="postalCode"
               class="form-control"
-              v-model="postalCode"
+              v-model="internalPostalCode"
             />
           </div>
           <div class="col">
-            <label for="city">Code postal</label>
-            <input type="text" placeholder="ville" id="city" class="form-control" v-model="city" />
+            <label for="city">Ville</label>
+            <input
+              type="text"
+              placeholder="ville"
+              id="city"
+              class="form-control"
+              v-model="internalCity"
+            />
           </div>
         </div>
         <div class="form-group d-flex justify-content-center mt-3">
@@ -63,7 +69,7 @@
             class="btn popin-btn btn-block btn-secondary"
             @click="$emit('hideAddress', false)"
           >
-            Plus tard
+            {{ cancelButtonLabel }}
           </button>
         </div>
       </form>
@@ -75,29 +81,50 @@
 import { mapActions } from "vuex";
 
 export default {
+  props: {
+    id: { default: null },
+    number: { default: "" },
+    streetTypeSelected: { default: "" },
+    street: { default: "" },
+    city: { default: "" },
+    postalCode: { default: "" },
+    cancelButtonLabel: { default: "Plus tard" },
+    edit: { default: false }
+  },
   data() {
     return {
-      number: "12",
-      street: "test",
-      postalCode: "62000",
-      city: "test",
+      internalNumber: this.number,
+      internalStreet: this.street,
+      internalPostalCode: this.postalCode,
+      internalCity: this.city,
       streetType: ["rue", "impasse", "avenue", "boulevard"],
-      streetTypeSelected: "rue",
+      internalStreetTypeSelected: this.streetTypeSelected,
       addressErrors: []
     };
   },
   methods: {
-    ...mapActions("user", ["createAddress"]),
+    ...mapActions("user", ["editAddress", "createAddress"]),
     async addressSubmit() {
       if (this.addressIsValid()) {
         try {
-          this.createAddress({
-            number: this.number,
-            street: this.street,
-            streetType: this.streetTypeSelected,
-            city: this.city,
-            postalCode: this.postalCode
-          });
+          if (!this.edit) {
+            this.createAddress({
+              number: this.internalNumber,
+              street: this.internalStreet,
+              streetType: this.internalStreetTypeSelected,
+              city: this.internalCity,
+              postalCode: this.internalPostalCode
+            });
+          } else {
+            this.editAddress({
+              id: this.id,
+              number: this.internalNumber,
+              street: this.internalStreet,
+              streetType: this.internalStreetTypeSelected,
+              city: this.internalCity,
+              postalCode: this.internalPostalCode
+            });
+          }
           this.$emit("hideAddress", false);
         } catch (e) {
           if (e.response && e.response.data && e.response.status === 401) {
@@ -111,23 +138,23 @@ export default {
     addressIsValid() {
       let isValid = true;
 
-      if (this.number === "") {
+      if (this.internalNumber === "") {
         this.addressErrors.push("Le numéro de voie est requis");
         isValid = false;
       }
-      if (this.streetTypeSelected === "") {
+      if (this.internalStreetTypeSelected === "") {
         this.addressErrors.push("Le type de voie est requis");
         isValid = false;
       }
-      if (this.street === "") {
+      if (this.internalStreet === "") {
         this.addressErrors.push("Le nom de la voie est requis");
         isValid = false;
       }
-      if (this.postalCode === "") {
+      if (this.internalPostalCode === "") {
         this.addressErrors.push("Le code postal est requis");
         isValid = false;
       }
-      if (this.city === "") {
+      if (this.internalCity === "") {
         this.addressErrors.push("Le nom de la ville est requis");
         isValid = false;
       }

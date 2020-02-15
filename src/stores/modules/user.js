@@ -74,19 +74,6 @@ const actions = {
     dispatch("getAuthToken", { username: email, password });
   },
 
-  async createAddress({ getters, dispatch }, { number, streetType, street, city, postalCode }) {
-    await productsApi.post("/addresses", {
-      number,
-      streetType,
-      street,
-      city,
-      postalCode,
-      user: `/api/users/${getters.currentUser.id}`
-    });
-
-    dispatch("fetchCurrentUser");
-  },
-
   async updateUser({commit}, {id, email, firstName, lastName}) {
     const response = await productsApi.patch(`/users/${id}`, {
       email,
@@ -109,6 +96,37 @@ const actions = {
     await productsApi.post(`/users/${id}`, {
       plainPassword
     });
+  },
+
+  async createAddress({ getters, dispatch }, { number, streetType, street, city, postalCode }) {
+    await productsApi.post("/addresses", {
+      number,
+      streetType,
+      street,
+      city,
+      postalCode,
+      user: `/api/users/${getters.currentUser.id}`
+    });
+
+    dispatch("fetchCurrentUser");
+  },
+
+  async editAddress({ dispatch }, { id, number, streetType, street, city, postalCode }) {
+    await productsApi.patch(`/addresses/${id}`, {
+      number,
+      streetType,
+      street,
+      city,
+      postalCode
+    });
+
+    dispatch("fetchCurrentUser");
+  },
+
+  async removeAddress({ dispatch }, { id }) {
+    await productsApi.delete(`/addresses/${id}`);
+
+    dispatch("fetchCurrentUser");
   }
 };
 
