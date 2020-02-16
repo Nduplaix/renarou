@@ -23,9 +23,12 @@
 import { mapGetters } from "vuex";
 
 export default {
+  computed: {
+    ...mapGetters("user", ["getUserLogged"])
+  },
   mounted() {
-    if (!localStorage.getItem("currentToken")) {
-      this.$router.push({ name: "404" });
+    if (!localStorage.getItem("currentToken") && !this.getUserLogged) {
+      this.$router.push({ name: "home" });
     }
   }
 };

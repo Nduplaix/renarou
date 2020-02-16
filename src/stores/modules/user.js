@@ -18,10 +18,14 @@ const getters = {
 };
 
 const mutations = {
-  setToken(state, token) {
+  setToken(state, { token, stayConnect }) {
     state.userLogged = true;
     const payload = parseToken(token);
-    localStorage.setItem("currentToken", token);
+
+    if (stayConnect) {
+      localStorage.setItem("currentToken", token);
+    }
+
     setJwt(token);
     state.token = payload;
   },
@@ -39,12 +43,12 @@ const mutations = {
 };
 
 const actions = {
-  async getAuthToken({ commit, dispatch }, { username, password }) {
+  async getAuthToken({ commit, dispatch }, { username, password, stayConnect }) {
     const response = await productsApi.post("/login_check", {
       username,
       password
     });
-    commit("setToken", response.data.token);
+    commit("setToken", { token: response.data.token, stayConnect });
     dispatch("fetchCurrentUser");
   },
 

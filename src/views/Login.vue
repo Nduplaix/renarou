@@ -30,6 +30,12 @@
             v-model="password"
           />
         </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="stay-connect" v-model="stayConnect" />
+          <label class="form-check-label" for="stay-connect">
+            Rester connecté
+          </label>
+        </div>
         <button type="submit" id="submit" class="popin-btn btn btn-primary btn-block">
           Connexion
         </button>
@@ -50,15 +56,20 @@ import { mapActions } from "vuex";
 
 export default {
   data: () => {
-    return { username: "nduplaix62@gmail.com", password: "azerty", errorMessage: null };
+    return {
+      username: "nduplaix62@gmail.com",
+      password: "azerty",
+      stayConnect: true,
+      errorMessage: null
+    };
   },
   methods: {
     ...mapActions("user", ["getAuthToken"]),
     async checkForm() {
-      const { username, password } = this;
+      const { username, password, stayConnect } = this;
       this.errorMessage = null;
       try {
-        await this.getAuthToken({ username, password });
+        await this.getAuthToken({ username, password, stayConnect });
         this.$emit("hideLogin", false);
       } catch (e) {
         if (e.response && e.response.data && e.response.data.code === 401) {
