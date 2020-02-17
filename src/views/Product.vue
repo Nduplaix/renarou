@@ -25,10 +25,15 @@
           <span class="text-danger" v-else>Il ne reste plus d'articles en stock</span>
         </div>
         <div class="select-size">
-          <form>
+          <form @submit.prevent="submitCart">
+            <div class="alert alert-danger mt-3" v-if="formErrors.length !== 0">
+              <div v-for="(message, index) in formErrors" :key="index">
+                {{ message }}
+              </div>
+            </div>
             <div class="form-group p-0 col-md-4 col-6">
               <label for="size">Taille</label>
-              <select id="size" class="form-control" v-model="selectedSize">
+              <select id="size" class="form-control" v-model="reference">
                 <option
                   :value="reference.id"
                   v-for="(reference, index) in currentProduct.tReferences"
@@ -43,7 +48,7 @@
               <label for="quantity">Quantité</label>
               <input-number
                 input-id="quantity"
-                :input-value="selectedQuantity"
+                :input-value="quantity"
                 :input-max="maxQuantity"
                 :input-min="minQuantity"
                 @updateValue="updateQuantity"
@@ -62,6 +67,12 @@
         </div>
       </div>
     </div>
+    <validation-pop-up type="success" v-if="addToCartValid" @close="addToCartValid = false">
+      Votre article a bien été ajouté à votre panier. Merci de votre confiance.
+    </validation-pop-up>
+    <validation-pop-up type="danger" v-if="addToCartError" @close="addToCartError = false">
+      Une erreur est survenue. Nous nous excusons pour la gène occasionné.
+    </validation-pop-up>
   </div>
 </template>
 
@@ -70,7 +81,8 @@ import { Carousel } from "../components/Carousel";
 import { InputNumber } from "../components/Inputs";
 import { ProductPrice } from "../components/Product";
 import { NewTag, DiscountTag } from "../components/Tags";
-import { mapGetters } from "vuex";
+import ValidationPopUp from "../components/PopUp/ValidationPopUp";
+import { mapGetters, mapActions } from "vuex";
 
 export default {
   components: {
@@ -78,37 +90,62 @@ export default {
     InputNumber,
     ProductPrice,
     NewTag,
-    DiscountTag
+    DiscountTag,
+    ValidationPopUp
   },
   computed: {
-    ...mapGetters(["currentProduct"])
+    ...mapGetters(["currentProduct"]),
+    ...mapGetters("user", ["getUserLogged"])
   },
   data() {
     return {
-      selectedSize: null,
-      selectedQuantity: 0,
+      reference: null,
+      quantity: 0,
       maxQuantity: 1,
-      minQuantity: 0
+      minQuantity: 0,
+      formErrors: [],
+      addToCartValid: false,
+      addToCartError: false
     };
   },
   mounted() {
-    this.selectedSize = this.currentProduct.tReferences[0].id;
+    this.reference = this.currentProduct.tReferences[0].id;
   },
   watch: {
-    selectedSize: function(newValue) {
+    reference: function(newValue) {
       this.maxQuantity = this.getReferenceById(newValue).stock;
       if (this.getReferenceById(newValue).stock > 0) {
-        this.selectedQuantity = 1;
+        this.quantity = 1;
         this.minQuantity = 1;
       }
     }
   },
   methods: {
+    ...mapActions("user", ["addLineToCart"]),
     updateQuantity(value) {
-      this.selectedQuantity = value;
+      this.quantity = value;
     },
     getReferenceById(id) {
       return this.currentProduct.tReferences.find(element => element.id === id);
+    },
+    async submitCart() {
+      if (this.getUserLogged) {
+        try {
+          const { reference, quantity } = this;
+          await this.addLineToCart({ reference, quantity });
+          this.addToCartValid = true;
+        } catch (e) {
+          this.formErrors = [];
+          if (e.response && e.response.data.code && e.response.data.code === 401) {
+            this.formErrors.push(e.response.data.message);
+          } else {
+            console.error(e);
+            this.addToCartError = true;
+          }
+        }
+      } else {
+        this.$emit("openLogin", true);
+      }
     }
   }
 };
