@@ -6,8 +6,8 @@
           <span class="h1">Mes articles</span>
           <table class="table table-hover mt-2 text-center">
             <thead>
-              <th>Nom de l'article</th>
               <th>Image</th>
+              <th>Nom de l'article</th>
               <th>Prix unitaire</th>
               <th>Quantité</th>
               <th>Promo</th>
@@ -29,7 +29,16 @@
           <tbody>
             <tr>
               <th>Prix total</th>
-              <td align="right">{{ currentUser.basket.price | toCurrency }}</td>
+              <td
+                align="right"
+                v-if="currentUser.basket.price === currentUser.basket.totalWithDiscount"
+              >
+                {{ currentUser.basket.price | toCurrency }}
+              </td>
+              <td align="right" v-else>
+                <p class="old-price m-0">{{ currentUser.basket.price | toCurrency }}</p>
+                <p class="new-price m-0">{{ currentUser.basket.totalWithDiscount | toCurrency }}</p>
+              </td>
             </tr>
             <tr v-if="currentUser.basket.totalDiscount && currentUser.basket.totalDiscount !== 0">
               <th>Réduction sur le panier</th>

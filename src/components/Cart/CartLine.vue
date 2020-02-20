@@ -1,12 +1,12 @@
 <template>
   <tr>
-    <td class="label">{{ line.reference.product.label }}</td>
     <td>
       <img
         :src="line.reference.product.images[0].link"
         :alt="line.reference.product.images[0].alt"
       />
     </td>
+    <td class="label">{{ line.reference.product.label }}</td>
     <td>{{ line.reference.product.price|toCurrency }}</td>
     <td class="d-flex justify-content-center">
       <input-number
@@ -17,8 +17,14 @@
         @updateValue="updateQuantity"
       />
     </td>
-    <td>{{ line.reference.product.discount ? `${line.reference.product.discount} %` : "aucune" }}</td>
-    <td>{{ line.totalPrice|toCurrency }}</td>
+    <td>
+      {{ line.reference.product.discount ? `-${line.reference.product.discount} %` : "aucune" }}
+    </td>
+    <td v-if="line.totalPrice === line.totalPriceWithDiscount">{{ line.totalPrice|toCurrency }}</td>
+    <td v-else>
+      <p class="old-price m-0">{{ line.totalPrice | toCurrency }}</p>
+      <p class="new-price m-0">{{ line.totalWithDiscount | toCurrency }}</p>
+    </td>
     <td>
       <button type="button" class="btn btn-danger" @click="deleteLine">
         <i class="fas fa-trash-alt"></i>

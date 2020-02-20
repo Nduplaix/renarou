@@ -20,15 +20,3 @@ export default {
   }
 };
 </script>
-
-<style lang="scss" scoped>
-@import "../../assets/scss/variables";
-
-.old-price {
-  text-decoration: line-through;
-}
-.new-price {
-  color: $wd-primary;
-  margin-left: 5px;
-}
-</style>
