@@ -75,6 +75,12 @@
         </li>
       </ul>
       <ul class="navbar-nav mr-0" v-else>
+        <li class="nav-item cart">
+          <router-link class="nav-link" :to="{ name: 'cart' }">
+            <i class="fas fa-shopping-cart cart__icon"></i>
+          </router-link>
+          <div class="cart__count" v-if="currentUser.basket">{{ cartCount() }}</div>
+        </li>
         <li class="nav-item dropdown">
           <a
             class="nav-link dropdown-toggle"
@@ -130,7 +136,7 @@ export default {
   },
   data() {
     return {
-      displayMenu: !this.isMobile(),
+      displayMenu: !this.isMobile()
     };
   },
   methods: {
@@ -145,6 +151,14 @@ export default {
 
     changeDisplayMenu() {
       this.displayMenu = !this.displayMenu;
+    },
+    cartCount() {
+      let count = 0;
+      this.currentUser.basket.basketLines.forEach(function(line) {
+        count += line.quantity;
+      });
+
+      return count;
     }
   }
 };
@@ -158,5 +172,27 @@ nav {
   z-index: 1000;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.11);
   min-height: $wd-navbar-height;
+
+  .cart {
+    position: relative;
+    width: 3rem;
+    &__icon {
+      font-size: 2rem;
+    }
+    &__count {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 20px;
+      width: 20px;
+      background-color: $wd-primary;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: $wd-white;
+      font-size: $wd-font-size-sm;
+    }
+  }
 }
 </style>

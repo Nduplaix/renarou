@@ -142,6 +142,18 @@ const actions = {
     });
 
     dispatch("fetchCurrentUser");
+  },
+
+  async updateLineCartQuantity({ dispatch }, { id, quantity }) {
+    await productsApi.patch(`/basket_lines/${id}`, { quantity });
+
+    dispatch("fetchCurrentUser");
+  },
+
+  async deleteCartLine({ dispatch }, { id }) {
+    await productsApi.delete(`/basket_lines/${id}`);
+
+    dispatch("fetchCurrentUser");
   }
 };
 

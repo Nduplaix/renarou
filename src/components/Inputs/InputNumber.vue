@@ -80,6 +80,7 @@ export default {
 
 <style lang="scss" scoped>
 .input-number {
+  max-width: 150px;
   input::-webkit-outer-spin-button,
   input::-webkit-inner-spin-button {
     -webkit-appearance: none;
