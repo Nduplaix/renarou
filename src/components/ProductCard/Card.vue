@@ -37,8 +37,18 @@
         </div>
       </div>
       <div class="card-body">
-        <span class="h5 card-title">{{ label }}</span>
+        <p class="h6 card-title">{{ label }}</p>
         <product-price class="card-text" :discount="discount" :price="price" />
+        <div>
+          <router-link
+            :to="{
+              name: 'product',
+              params: { product: slug }
+            }"
+            class="btn btn-secondary"
+            :class="{ 'btn-sm': isSmall }"
+          >Voir plus</router-link>
+        </div>
       </div>
     </div>
   </router-link>
@@ -120,7 +130,15 @@ a:hover {
   }
 
   .card-body {
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    .card-title {
+      text-align: center;
+    }
     .card-text {
+      font-size: 1rem;
       font-weight: 700;
     }
   }
@@ -131,6 +149,15 @@ a:hover {
         max-height: 300px;
         max-width: 150px;
       }
+    }
+    .card-body {
+      .card-title {
+        max-width: 100%;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+      min-height: 50px;
     }
   }
 }

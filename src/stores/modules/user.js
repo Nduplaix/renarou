@@ -63,7 +63,7 @@ const actions = {
   setStorageToken({ commit, dispatch }) {
     const token = localStorage.getItem("currentToken");
     if (token) {
-      commit("setToken", token);
+      commit("setToken", { token });
       dispatch("fetchCurrentUser");
     }
   },
@@ -129,6 +129,29 @@ const actions = {
 
   async removeAddress({ dispatch }, { id }) {
     await productsApi.delete(`/addresses/${id}`);
+
+    dispatch("fetchCurrentUser");
+  },
+
+  async addLineToCart({ dispatch, getters }, { reference, quantity }) {
+    const basket = getters.currentUser.basket.id;
+    await productsApi.post("/basket-lines", {
+      reference: `/api/references/${reference}`,
+      quantity,
+      basket: `/api/baskets/${basket}`
+    });
+
+    dispatch("fetchCurrentUser");
+  },
+
+  async updateLineCartQuantity({ dispatch }, { id, quantity }) {
+    await productsApi.patch(`/basket_lines/${id}`, { quantity });
+
+    dispatch("fetchCurrentUser");
+  },
+
+  async deleteCartLine({ dispatch }, { id }) {
+    await productsApi.delete(`/basket_lines/${id}`);
 
     dispatch("fetchCurrentUser");
   }

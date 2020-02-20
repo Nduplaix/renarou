@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="app">
     <NavBar @showLogin="updateDisplayLogin" @showRegister="updateDisplayRegister"/>
-    <router-view />
+    <router-view @openLogin="updateDisplayLogin" />
     <register v-if="showRegister" @hideRegister="updateDisplayRegister" />
     <login v-if="showLogin" @hideLogin="updateDisplayLogin" />
   </div>

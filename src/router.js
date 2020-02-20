@@ -4,6 +4,7 @@ import Router from "vue-router";
 import Home from "./views/Home";
 import List from "./views/List";
 import Product from "./views/Product";
+import Cart from "./views/Cart";
 import { Addresses, EditPassword, EditProfile, Profile, UserProfile } from "./views/UserProfile";
 import Error404 from "./views/Error404";
 
@@ -93,6 +94,11 @@ export default new Router({
           name: "commandes"
         }
       ]
+    },
+    {
+      path: "/panier",
+      name: "cart",
+      component: Cart
     },
     {
       path: "/404",
