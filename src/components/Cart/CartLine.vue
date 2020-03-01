@@ -20,8 +20,9 @@
     <td>
       {{ line.reference.product.discount ? `-${line.reference.product.discount} %` : "aucune" }}
     </td>
-    <td v-if="line.totalPrice === line.totalPriceWithDiscount">{{ line.totalPrice|toCurrency }}</td>
+    <td v-if="line.totalPrice === line.totalWithDiscount">{{ line.totalPrice|toCurrency }}</td>
     <td v-else>
+      {{line.totalPrice === line.totalWithDiscount}}
       <p class="old-price m-0">{{ line.totalPrice | toCurrency }}</p>
       <p class="new-price m-0">{{ line.totalWithDiscount | toCurrency }}</p>
     </td>

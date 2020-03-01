@@ -33,7 +33,7 @@
                 align="right"
                 v-if="currentUser.basket.price === currentUser.basket.totalWithDiscount"
               >
-                {{ currentUser.basket.price | toCurrency }}
+                {{ currentUser.basket.totalWithDiscount | toCurrency }}
               </td>
               <td align="right" v-else>
                 <p class="old-price m-0">{{ currentUser.basket.price | toCurrency }}</p>
@@ -63,7 +63,9 @@
           </div>
         </form>
         <div class="form-group">
-          <button type="button" class="btn btn-secondary">Je passe commande</button>
+          <router-link class="btn btn-secondary" :to="{ name: 'command-validation' }">
+            Je passe commande
+          </router-link>
         </div>
       </div>
     </div>

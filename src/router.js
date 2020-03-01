@@ -7,6 +7,7 @@ import Product from "./views/Product";
 import Cart from "./views/Cart";
 import { Addresses, EditPassword, EditProfile, Profile, UserProfile } from "./views/UserProfile";
 import Error404 from "./views/Error404";
+import CommandConfirm from "./views/CommandConfirm";
 
 Vue.use(Router);
 
@@ -99,6 +100,11 @@ export default new Router({
       path: "/panier",
       name: "cart",
       component: Cart
+    },
+    {
+      path: "/validation-commande",
+      name: "command-validation",
+      component: CommandConfirm
     },
     {
       path: "/404",
