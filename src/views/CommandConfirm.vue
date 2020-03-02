@@ -38,22 +38,35 @@
         </div>
       </div>
     </form>
+    <validation-pop-up type="danger" v-if="commandError" @close="commandError = false">
+      Une erreur est survenue lors de votre commande. {{errorMessage}}
+    </validation-pop-up>
   </div>
 </template>
 
 <script>
 import { mapGetters, mapActions } from "vuex";
+import ValidationPopUp from "../components/PopUp/ValidationPopUp";
 
 export default {
+  components: {
+    ValidationPopUp
+  },
   computed: {
     ...mapGetters("user", ["currentUser"]),
-    ...mapGetters("command", ["deliveryModes"])
+    ...mapGetters("command", ["deliveryModes", "paymentIntent"])
   },
   data() {
     return {
       deliveryAddress: this.currentUser ? this.currentUser.addresses[0].id : null,
       deliveryMode: this.deliveryModes ? this.deliveryModes[0].id : null,
-      stripePublicKey: process.env.STRIPE_PUBLIC
+      stripePublicKey: process.env.VUE_APP_STRIPE_PUBLIC,
+      stripe: null,
+      elements: null,
+      card: null,
+      commandError: false,
+      errorMessage: "",
+      commandId: null
     };
   },
   watch: {
@@ -66,20 +79,14 @@ export default {
   },
   mounted() {
     this.getDeliveryModes();
-    let stripe = Stripe(`${process.env.STRIPE_PUBLIC}`);
-    let elements = stripe.elements();
 
-    // Set up Stripe.js and Elements to use in checkout form
-    let style = {
-      base: {
-        color: "#32325d"
-      }
-    };
+    this.stripe = Stripe(this.stripePublicKey);
+    this.elements = this.stripe.elements();
+    this.card = this.elements.create("card");
 
-    let card = elements.create("card", { style: style });
-    card.mount("#card-element");
+    this.card.mount("#card-element");
 
-    card.addEventListener("change", function(event) {
+    this.card.addEventListener("change", function(event) {
       let displayError = document.getElementById("card-errors");
       if (event.error) {
         displayError.textContent = event.error.message;
@@ -89,15 +96,68 @@ export default {
     });
   },
   methods: {
-    ...mapActions("command", ["fetchDeliveryModes"]),
-    submitCommand() {
-      return;
+    ...mapActions("command", [
+      "fetchDeliveryModes",
+      "createPayment",
+      "createCommand",
+      "updateCommand"
+    ]),
+    async submitCommand() {
+      try {
+        const command = await this.createCommand({
+          deliveryId: this.deliveryMode,
+          addressId: this.deliveryAddress
+        });
+
+        this.commandId = command.id;
+
+        await this.createPayment({
+          amount: this.currentUser.basket.totalWithDiscount,
+          user: this.currentUser
+        });
+
+        this.stripe
+          .confirmCardPayment(this.paymentIntent.client_secret, {
+            payment_method: {
+              card: this.card,
+              billing_details: {
+                name: `${this.currentUser.firstName} ${this.currentUser.lastName}`
+              }
+            }
+          })
+          .then(result => {
+            this.paymentSuccess(result);
+          });
+      } catch (e) {
+        console.error(e);
+        this.commandError = true;
+        this.errorMessage = e.data.message;
+      }
     },
     async getDeliveryModes() {
       try {
         await this.fetchDeliveryModes();
       } catch (e) {
         console.log(e);
+      }
+    },
+    async paymentSuccess(result) {
+      if (result.error) {
+        // Show error to your customer
+        console.log(result.error.message);
+        this.commandError = true;
+        this.errorMessage = result.error.message;
+      } else {
+        if (result.paymentIntent.status === "succeeded") {
+          try {
+            await this.updateCommand({ id: this.commandId });
+            this.$router.push("/");
+          } catch (e) {
+            console.error(e);
+            this.commandError = true;
+            this.errorMessage = e.data.message;
+          }
+        }
       }
     }
   }

@@ -24,3 +24,17 @@ export function handleApiErrors(e) {
     console.error(e);
   }
 }
+
+// Stripe API
+
+const stripeConfig = {
+  baseURL: "https://api.stripe.com/v1",
+  headers: {
+    "Content-Type": "application/x-www-form-urlencoded",
+    Authorization: `Bearer ${process.env.VUE_APP_STRIPE_SECRET}`
+  }
+};
+
+const stripeInstance = axios.create(stripeConfig);
+
+export const stripeApi = stripeInstance;
