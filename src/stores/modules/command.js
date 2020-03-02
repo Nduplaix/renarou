@@ -17,6 +17,9 @@ const mutations = {
 const actions = {
   async fetchDeliveryModes({ commit }) {
     commit("setDeliveryModes", await productsApi.get("/deliveries?isActive=true"));
+  },
+  async createPayment() {
+
   }
 };
 
