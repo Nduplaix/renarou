@@ -1,27 +1,14 @@
 <template>
-  <div class="cart container mt-5">
+  <div class="cart container mt-5" v-if="currentUser && currentUser.basket">
     <div class="row">
       <div class="col-md-8 m-3 p-3 cart__shadow">
         <div class="table-responsive-sm mt-4">
           <span class="h1">Mes articles</span>
-          <table class="table table-hover mt-2 text-center">
-            <thead>
-              <th>Image</th>
-              <th>Nom de l'article</th>
-              <th>Prix unitaire</th>
-              <th>Quantité</th>
-              <th>Promo</th>
-              <th>Prix total</th>
-              <th>actions</th>
-            </thead>
-            <tbody v-if="currentUser.basket">
-              <cart-line
-                v-for="(line, index) in currentUser.basket.basketLines"
-                :key="index"
-                :line="line"
-              />
-            </tbody>
-          </table>
+          <cart-line
+            v-for="(line, index) in currentUser.basket.basketLines"
+            :key="index"
+            :line="line"
+          />
         </div>
       </div>
       <div class="col-md-3 m-3 p-3 cart__shadow">
@@ -33,7 +20,7 @@
                 align="right"
                 v-if="currentUser.basket.price === currentUser.basket.totalWithDiscount"
               >
-                {{ currentUser.basket.price | toCurrency }}
+                {{ currentUser.basket.totalWithDiscount | toCurrency }}
               </td>
               <td align="right" v-else>
                 <p class="old-price m-0">{{ currentUser.basket.price | toCurrency }}</p>
@@ -42,15 +29,32 @@
             </tr>
             <tr v-if="currentUser.basket.totalDiscount && currentUser.basket.totalDiscount !== 0">
               <th>Réduction sur le panier</th>
-              <td align="right">{{ currentUser.basket.totalDiscount|toCurrency }}</td>
-            </tr>
-            <tr>
-              <th>Frais de port</th>
-              <td align="right">TO FIX</td>
+              <td align="right">{{ currentUser.basket.totalDiscount | toCurrency }}</td>
             </tr>
             <tr>
               <th>Délais de livraison</th>
               <td align="right">5 à 6 jours</td>
+            </tr>
+            <tr v-if="getDelivery">
+              <th>Frais de port</th>
+              <td align="right" v-if="getDelivery().shippingPrice === 0">
+                <span class="text-primary font-weight-bold">Gratuit</span>
+              </td>
+              <td align="right" v-else>{{getDelivery().shippingPrice | toCurrency}}</td>
+            </tr>
+            <tr>
+              <th><label for="delivery-mode">Mode de livraison</label></th>
+              <td>
+                <select id="delivery-mode" class="form-control" v-model="deliveryMode" @change="setDelivery()">
+                  <option
+                    :value="delivery.id"
+                    v-for="(delivery, index) in deliveryModes"
+                    :key="index"
+                  >
+                    {{ delivery.label }}
+                  </option>
+                </select>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -63,7 +67,9 @@
           </div>
         </form>
         <div class="form-group">
-          <button type="button" class="btn btn-secondary">Je passe commande</button>
+          <router-link class="btn btn-secondary" :to="{ name: 'command-validation' }">
+            Je passe commande
+          </router-link>
         </div>
       </div>
     </div>
@@ -71,15 +77,41 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
-import CartLine from "../components/Cart/CartLine";
+  import {mapActions, mapGetters} from "vuex";
+  import CartLine from "../components/Cart/CartLine";
 
-export default {
+  export default {
   components: {
     CartLine
   },
   computed: {
-    ...mapGetters("user", ["currentUser"])
+    ...mapGetters("user", ["currentUser"]),
+    ...mapGetters("command", ["deliveryModes"])
+  },
+  mounted() {
+    this.init();
+  },
+  data() {
+    return {
+      deliveryMode:
+        typeof localStorage.getItem("delivery") !== "undefined"
+          ? parseInt(localStorage.getItem("delivery"))
+          : 1
+    };
+  },
+  methods: {
+    ...mapActions("command", ["fetchDeliveryModes"]),
+    async init() {
+      await this.fetchDeliveryModes();
+      this.setDelivery();
+    },
+    setDelivery() {
+      localStorage.setItem("delivery", this.deliveryMode);
+    },
+    getDelivery() {
+      const deliveryId = this.deliveryMode;
+      return this.deliveryModes.find(elem => elem.id === deliveryId);
+    }
   }
 };
 </script>

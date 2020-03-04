@@ -13,17 +13,10 @@
         </div>
         <div><p>Prix unitaire : {{ line.reference.product.price | toCurrency }}</p></div>
       </div>
-      <div class="col-md-3 d-flex flex-column justify-content-center align-items-center">
-        <input-number
-          class="p-2"
-          input-id="quantity"
-          :input-value="line.quantity"
-          :input-max="maxQuantity"
-          :input-min="minQuantity"
-          @updateValue="updateQuantity"
-        />
+      <div class="col-md-4 d-flex flex-column justify-content-center align-items-center">
+        <p>Nombre d'articles : {{ line.quantity }}</p>
         <div>
-          <p>{{ line.reference.product.discount ? `Promo : -${line.reference.product.discount} %` : "" }}</p>
+          <p>{{ line.reference.product.discount ? `Promo : - ${line.reference.product.discount} %` : "" }}</p>
         </div>
         <div class="row">
           <div class="col">Prix total : </div>
@@ -36,48 +29,16 @@
           </div>
         </div>
       </div>
-      <div class="col-md-1 mt-3 mt-md-0">
-        <button type="button" class="btn btn-danger" @click="deleteLine">
-          <i class="fas fa-trash-alt"></i>
-        </button>
-      </div>
     </div>
   </div>
 </template>
 
 <script>
-import { InputNumber } from "../Inputs";
 import { mapActions } from "vuex";
 
 export default {
-  components: {
-    InputNumber
-  },
   props: {
     line: { required: true }
-  },
-  data() {
-    return {
-      maxQuantity: this.line.reference.stock,
-      minQuantity: 1
-    };
-  },
-  methods: {
-    ...mapActions("user", ["updateLineCartQuantity", "deleteCartLine"]),
-    updateQuantity(quantity) {
-      try {
-        this.updateLineCartQuantity({ id: this.line.id, quantity: parseInt(quantity) });
-      } catch (e) {
-        this.$emit("error", e);
-      }
-    },
-    deleteLine() {
-      try {
-        this.deleteCartLine({ id: this.line.id });
-      } catch (e) {
-        this.$emit("error", e);
-      }
-    }
   }
 };
 </script>

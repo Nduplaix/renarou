@@ -1,7 +1,7 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import { productsApi } from "../lib/apis";
-import { user } from "./modules";
+import { user, command } from "./modules";
 
 Vue.use(Vuex);
 
@@ -141,7 +141,7 @@ export default new Vuex.Store({
       }
     }
   },
-  modules: { user }
+  modules: { user, command }
 });
 
 function getIdFromSlug(slug) {
