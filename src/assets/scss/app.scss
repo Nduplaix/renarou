@@ -23,7 +23,7 @@ body {
       cursor: not-allowed;
     }
 
-    .btn-primary, .btn-secondary {
+    .btn-primary, .btn-secondary, .btn-outline-primary:hover {
       color: $wd-white;
     }
   }
