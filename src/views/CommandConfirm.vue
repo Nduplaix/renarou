@@ -1,10 +1,31 @@
 <template>
   <div class="container">
+    <div class="command-confirm p-3 m-3" v-if="currentUser && currentUser.basket">
+      <span class="h1">Résumé des articles</span>
+      <command-line
+        v-for="(line, index) in currentUser.basket.basketLines"
+        :key="index"
+        :line="line"
+      />
+    </div>
     <form @submit.prevent="submitCommand">
-      <div class="command-confirm p-3 m-3">
-        <div>
+      <div class="command-confirm p-3 m-3 text-center">
+        <div v-if="currentUser && deliveryMode && deliveryModes">
           <span class="h1">Informations de la commandes</span>
           <div class="form-group col-md-6 offset-md-3">
+            <label for="delivery-mode">Mode de livraison</label>
+            <select
+              id="delivery-mode"
+              class="form-control"
+              v-model="deliveryMode"
+              @change="updateDeliveryAddress"
+            >
+              <option :value="delivery.id" v-for="(delivery, index) in deliveryModes" :key="index">
+                {{ delivery.label }}
+              </option>
+            </select>
+          </div>
+          <div class="form-group col-md-6 offset-md-3" v-if="deliveryMode === 1">
             <label for="delivery-address">Adresse de livraison</label>
             <select id="delivery-address" class="form-control" v-model="deliveryAddress">
               <option
@@ -16,13 +37,43 @@
               </option>
             </select>
           </div>
-          <div class="form-group col-md-6 offset-md-3">
-            <label for="delivery-mode">Mode de livraison</label>
-            <select id="delivery-mode" class="form-control" v-model="deliveryMode">
-              <option :value="delivery.id" v-for="(delivery, index) in deliveryModes" :key="index">
-                {{ delivery.label }}
-              </option>
-            </select>
+        </div>
+        <div v-if="currentUser && currentUser.basket">
+          <span class="h1">Récapitulatif</span>
+          <div class="my-3">
+            <p>
+              Frais de port :
+              <span v-if="deliveryMode === 1">
+                {{ getDeliveryFromId(this.deliveryMode).shippingPrice | toCurrency }}
+              </span>
+              <span v-else><span class="font-weight-bold text-primary">Gratuit</span></span>
+            </p>
+            <p>Réduction sur la commande : {{ currentUser.basket.totalDiscount | toCurrency }}</p>
+            <p>
+              Prix total de la commande :
+              <span v-if="currentUser.basket.price === currentUser.basket.totalWithDiscount">
+                {{
+                  (currentUser.basket.totalWithDiscount +
+                    getDeliveryFromId(this.deliveryMode).shippingPrice)
+                    | toCurrency
+                }}
+              </span>
+              <span v-else>
+                <span class="old-price">
+                  {{
+                    (currentUser.basket.price + getDeliveryFromId(this.deliveryMode).shippingPrice)
+                      | toCurrency
+                  }}
+                </span>
+                <span class="new-price">
+                  {{
+                    (currentUser.basket.totalWithDiscount +
+                      getDeliveryFromId(this.deliveryMode).shippingPrice)
+                      | toCurrency
+                  }}
+                </span>
+              </span>
+            </p>
           </div>
         </div>
         <div>
@@ -39,7 +90,7 @@
       </div>
     </form>
     <validation-pop-up type="danger" v-if="commandError" @close="commandError = false">
-      Une erreur est survenue lors de votre commande. {{errorMessage}}
+      Une erreur est survenue lors de votre commande. {{ errorMessage }}
     </validation-pop-up>
   </div>
 </template>
@@ -47,10 +98,12 @@
 <script>
 import { mapGetters, mapActions } from "vuex";
 import ValidationPopUp from "../components/PopUp/ValidationPopUp";
+import CommandLine from "../components/Cart/CommandLine";
 
 export default {
   components: {
-    ValidationPopUp
+    ValidationPopUp,
+    CommandLine
   },
   computed: {
     ...mapGetters("user", ["currentUser"]),
@@ -58,8 +111,11 @@ export default {
   },
   data() {
     return {
-      deliveryAddress: this.currentUser ? this.currentUser.addresses[0].id : null,
-      deliveryMode: this.deliveryModes ? this.deliveryModes[0].id : null,
+      deliveryAddress: null,
+      deliveryMode:
+        typeof localStorage.getItem("delivery") !== "undefined"
+          ? parseInt(localStorage.getItem("delivery"))
+          : 1,
       stripePublicKey: process.env.VUE_APP_STRIPE_PUBLIC,
       stripe: null,
       elements: null,
@@ -72,13 +128,14 @@ export default {
   watch: {
     currentUser: function() {
       this.deliveryAddress = this.currentUser.addresses[0].id;
-    },
-    deliveryModes: function() {
-      this.deliveryMode = this.deliveryModes[0].id;
     }
   },
   mounted() {
     this.getDeliveryModes();
+
+    if (this.currentUser && this.currentUser.addresses) {
+      this.deliveryAddress = this.currentUser.addresses[0].id;
+    }
 
     this.stripe = Stripe(this.stripePublicKey);
     this.elements = this.stripe.elements();
@@ -141,6 +198,9 @@ export default {
         console.log(e);
       }
     },
+    getDeliveryFromId(id) {
+      return this.deliveryModes.find(elem => elem.id === id);
+    },
     async paymentSuccess(result) {
       if (result.error) {
         // Show error to your customer
@@ -159,14 +219,16 @@ export default {
           }
         }
       }
+    },
+    updateDeliveryAddress() {
+      localStorage.setItem("delivery", this.deliveryMode);
     }
   }
 };
 </script>
 
 <style lang="scss" scoped>
-.command-confirm{
-  text-align: center;
+.command-confirm {
   box-shadow: 0 2px 20px 8px rgba(0, 0, 0, 0.11);
 }
 </style>
