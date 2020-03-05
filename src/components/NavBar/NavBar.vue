@@ -27,7 +27,7 @@
       }"
       v-if="displayMenu"
     >
-      <div v-if="isMobile" class="mb-3">
+      <div v-if="isMobile()" class="mb-3">
         <a type="button" class="item-link" @click="displayMenu = false">
           <i class="fas fa-times"></i> Fermer
         </a>
