@@ -1,17 +1,17 @@
 <template>
   <div class="w-100">
-    <div v-if="getUserLogged">
-      <div class="border-bottom border-top" v-for="(link, index) in userLinks()" :key="index">
-        <a type="button" @click="closeMenu(link)">
+    <ul class="navbar-nav" v-if="getUserLogged">
+      <li class="nav-item" v-for="(link, index) in userLinks()" :key="index">
+        <a type="button" class="nav-link" @click="closeMenu(link)">
           {{ link.label }}
         </a>
-      </div>
-      <div class="border-bottom border-top">
-        <a type="button" @click="$emit('logout')">
+      </li>
+      <li class="nav-item">
+        <a type="button" class="nav-link" @click="$emit('logout')">
           Deconnexion
         </a>
-      </div>
-    </div>
+      </li>
+    </ul>
     <div class="row w-100 m-0" v-else>
       <button type="submit" class="col btn btn-outline-primary" @click="$emit('showLogin')">Me connecter</button>
       <button type="submit" class="col btn btn-outline-primary" @click="$emit('showRegister')">M'inscrire</button>
@@ -32,3 +32,4 @@ export default {
   }
 };
 </script>
+
