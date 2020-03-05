@@ -35,7 +35,7 @@
               <th>Délais de livraison</th>
               <td align="right">5 à 6 jours</td>
             </tr>
-            <tr v-if="getDelivery">
+            <tr v-if="getDelivery()">
               <th>Frais de port</th>
               <td align="right" v-if="getDelivery().shippingPrice === 0">
                 <span class="text-primary font-weight-bold">Gratuit</span>
