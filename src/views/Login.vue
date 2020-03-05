@@ -57,8 +57,8 @@ import { mapActions } from "vuex";
 export default {
   data: () => {
     return {
-      username: "nduplaix62@gmail.com",
-      password: "azerty",
+      username: "",
+      password: "",
       stayConnect: true,
       errorMessage: null
     };

@@ -1,5 +1,8 @@
 <template>
   <ul class="navbar-nav" :class="isMobile() ? 'w-100' : 'mr-auto'">
+    <li class="nav-item" v-if="isMobile()">
+      <a type="button" class="nav-link" @click="homePush">Accueil</a>
+    </li>
     <li class="nav-item dropdown" v-for="(category, index) in getCategories" :key="index">
       <a
         class="nav-link dropdown-toggle"
@@ -57,6 +60,10 @@ export default {
     },
     closeMenu() {
       this.$emit("closeMenu");
+    },
+    homePush() {
+      this.$emit("closeMenu");
+      this.$router.push({ path: "/" });
     }
   }
 };

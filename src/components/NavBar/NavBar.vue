@@ -1,27 +1,37 @@
 <template>
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <router-link class="navbar-brand" :to="{ name: 'home' }">Renarou</router-link>
-    <button
-      class="navbar-toggler"
-      type="button"
-      data-toggle="collapse"
-      data-target="#navbarSupportedContent"
-      aria-controls="navbarSupportedContent"
-      aria-expanded="false"
-      aria-label="Toggle navigation"
-      @click="changeDisplayMenu"
+    <router-link
+      class="navbar-brand"
+      :class="{
+        'm-0': isMobile()
+      }"
+      :to="{ name: 'home' }"
+      v-if="!isMobile()"
     >
-      <span class="navbar-toggler-icon"></span>
-    </button>
+      Renarou
+    </router-link>
+    <div class="w-100" v-if="isMobile()">
+      <mobile-nav-bar-profile-menu
+        :get-user-logged="getUserLogged"
+        :current-user="currentUser"
+        @selectionMenu="updateMenu"
+        @closeMenu="displayMenu = false"
+      />
+    </div>
 
     <div
       class="collapse navbar-collapse"
       id="navbarSupportedContent"
       :class="{
-        'collapse-mobile d-flex flex-column justify-content-between align-center': isMobile()
+        'collapse-mobile': isMobile()
       }"
       v-if="displayMenu"
     >
+      <div v-if="isMobile" class="mb-3">
+        <a type="button" class="item-link" @click="displayMenu = false">
+          <i class="fas fa-times"></i> Fermer
+        </a>
+      </div>
       <nav-bar-menu
         :get-categories="getCategories"
         @closeMenu="closeMenu"
@@ -35,10 +45,7 @@
         @closeMenu="closeMenu"
         v-if="isMobile() && !displaySelectionMenu"
       />
-      <div class="w-100" v-if="isMobile()">
-        <mobile-nav-bar-profile-menu @selectionMenu="updateMenu" />
-      </div>
-      <div v-else>
+      <div v-if="!isMobile()">
         <nav-bar-profile-menu
           :get-user-logged="getUserLogged"
           :current-user="currentUser"
@@ -100,6 +107,7 @@ export default {
       }
     },
     updateMenu(show) {
+      this.displayMenu = true;
       this.displaySelectionMenu = show;
     },
     showRegister() {
@@ -116,6 +124,10 @@ export default {
 
 <style lang="scss" scoped>
 @import "../../assets/scss/variables";
+
+.item-link {
+  color: rgba(0, 0, 0, 0.5);
+}
 nav {
   position: sticky;
   top: 0;

@@ -1,11 +1,7 @@
 <template>
   <ul class="navbar-nav mr-0" v-if="!getUserLogged">
     <li class="nav-item">
-      <button
-        type="button"
-        class="btn btn-outline-primary mr-3"
-        @click="$emit('showLogin', true)"
-      >
+      <button type="button" class="btn btn-outline-primary mr-3" @click="$emit('showLogin', true)">
         Me connecter
       </button>
     </li>
