@@ -53,7 +53,7 @@ build-docker:
 ##
 
 node:                                                        ## Run interactive sh inside node
-	$(DOCKER_COMPOSE) run --rm node sh
+	$(DOCKER_COMPOSE) run --rm webpack sh
 
 .PHONY: node
 
