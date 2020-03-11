@@ -1,13 +1,18 @@
 <template>
-  <div class="cart container mt-5" v-if="currentUser && currentUser.basket">
+  <div class="cart container mt-5" v-if="basket">
     <div class="row">
       <div class="col-md-8 m-3 p-3 cart__shadow">
         <div class="table-responsive-sm mt-4">
           <span class="h1">Mes articles</span>
+          <div class="alert alert-warning text-center" v-if="basket.basketLines.length <= 0">
+            <p>Votre panier est vide</p>
+          </div>
           <cart-line
-            v-for="(line, index) in currentUser.basket.basketLines"
+            v-for="(line, index) in basket.basketLines"
             :key="index"
             :line="line"
+            :user-logged="getUserLogged"
+            :index="index"
           />
         </div>
       </div>
@@ -16,20 +21,17 @@
           <tbody>
             <tr>
               <th>Prix total</th>
-              <td
-                align="right"
-                v-if="currentUser.basket.price === currentUser.basket.totalWithDiscount"
-              >
-                {{ currentUser.basket.totalWithDiscount | toCurrency }}
+              <td align="right" v-if="basket.price === basket.totalWithDiscount">
+                {{ basket.totalWithDiscount | toCurrency }}
               </td>
               <td align="right" v-else>
-                <p class="old-price m-0">{{ currentUser.basket.price | toCurrency }}</p>
-                <p class="new-price m-0">{{ currentUser.basket.totalWithDiscount | toCurrency }}</p>
+                <p class="old-price m-0">{{ basket.price | toCurrency }}</p>
+                <p class="new-price m-0">{{ basket.totalWithDiscount | toCurrency }}</p>
               </td>
             </tr>
-            <tr v-if="currentUser.basket.totalDiscount && currentUser.basket.totalDiscount !== 0">
+            <tr v-if="basket.totalDiscount && basket.totalDiscount !== 0">
               <th>Réduction sur le panier</th>
-              <td align="right">{{ currentUser.basket.totalDiscount | toCurrency }}</td>
+              <td align="right">{{ basket.totalDiscount | toCurrency }}</td>
             </tr>
             <tr>
               <th>Délais de livraison</th>
@@ -67,9 +69,18 @@
           </div>
         </form>
         <div class="form-group">
-          <router-link class="btn btn-secondary" :to="{ name: 'command-validation' }">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            :disabled="basket.basketLines.length <= 0"
+            @click="submitCart"
+            v-if="getUserLogged"
+          >
             Je passe commande
-          </router-link>
+          </button>
+          <button type="button" class="btn btn-secondary" @click="submitCart" v-else>
+            Me connecter pour passer ma commande
+          </button>
         </div>
       </div>
     </div>
@@ -77,15 +88,16 @@
 </template>
 
 <script>
-  import {mapActions, mapGetters} from "vuex";
-  import CartLine from "../components/Cart/CartLine";
+import { mapActions, mapGetters } from "vuex";
+import CartLine from "../components/Cart/CartLine";
 
-  export default {
+export default {
   components: {
     CartLine
   },
   computed: {
-    ...mapGetters("user", ["currentUser"]),
+    ...mapGetters("user", ["currentUser", "getUserLogged"]),
+    ...mapGetters("cart", ["getBasket"]),
     ...mapGetters("command", ["deliveryModes"])
   },
   mounted() {
@@ -93,17 +105,29 @@
   },
   data() {
     return {
+      basket: null,
       deliveryMode:
         typeof localStorage.getItem("delivery") !== "undefined"
           ? parseInt(localStorage.getItem("delivery"))
           : 1
     };
   },
+  watch: {
+    currentUser() {
+      this.basket = this.currentUser.basket;
+    }
+  },
   methods: {
     ...mapActions("command", ["fetchDeliveryModes"]),
     async init() {
       await this.fetchDeliveryModes();
       this.setDelivery();
+
+      if (this.getUserLogged) {
+        this.basket = this.currentUser && this.currentUser.basket ? this.currentUser.basket : null;
+      } else {
+        this.basket = this.getBasket;
+      }
     },
     setDelivery() {
       localStorage.setItem("delivery", this.deliveryMode);
@@ -111,6 +135,13 @@
     getDelivery() {
       const deliveryId = this.deliveryMode;
       return this.deliveryModes.find(elem => elem.id === deliveryId);
+    },
+    submitCart() {
+      if (!this.getUserLogged) {
+        this.$emit("openLogin", true);
+      } else if (this.basket.basketLines.length > 0) {
+        this.$router.push({ name: "command-validation" });
+      }
     }
   }
 };
@@ -121,5 +152,8 @@
   &__shadow {
     box-shadow: 0 2px 20px 8px rgba(0, 0, 0, 0.11);
   }
+}
+button:disabled {
+  cursor: not-allowed;
 }
 </style>

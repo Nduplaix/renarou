@@ -13,7 +13,7 @@
     <div class="w-100" v-if="isMobile()">
       <mobile-nav-bar-profile-menu
         :get-user-logged="getUserLogged"
-        :current-user="currentUser"
+        :basket="basket"
         @selectionMenu="updateMenu"
         @closeMenu="displayMenu = false"
       />
@@ -48,6 +48,7 @@
       <div v-if="!isMobile()">
         <nav-bar-profile-menu
           :get-user-logged="getUserLogged"
+          :basket="basket"
           :current-user="currentUser"
           @showRegister="$emit('showRegister', true)"
           @showLogin="$emit('showLogin', true)"
@@ -74,13 +75,34 @@ export default {
   },
   computed: {
     ...mapGetters(["getCategories"]),
-    ...mapGetters("user", ["currentUser", "getUserLogged"])
+    ...mapGetters("user", ["currentUser", "getUserLogged"]),
+    ...mapGetters("cart", ["getBasket"])
   },
   data() {
     return {
       displayMenu: !this.isMobile(),
-      displaySelectionMenu: true
+      displaySelectionMenu: true,
+      basket: null
     };
+  },
+  watch: {
+    getUserLogged() {
+      if (!this.getUserLogged) {
+        this.basket = this.getBasket;
+      }
+    },
+    currentUser() {
+      if (this.getUserLogged) {
+        this.basket = this.currentUser.basket;
+      }
+    }
+  },
+  mounted() {
+    if (this.getUserLogged) {
+      this.basket = this.currentUser && this.currentUser.basket ? this.currentUser.basket : null;
+    } else {
+      this.basket = this.getBasket;
+    }
   },
   methods: {
     ...mapMutations("user", ["logout"]),
@@ -89,6 +111,10 @@ export default {
 
       if (this.isMobile()) {
         this.displayMenu = false;
+      }
+
+      if (this.$route.name === "cart") {
+        this.$router.push({ name: "home" });
       }
 
       if (this.$route.matched[0].name === "profile") {
