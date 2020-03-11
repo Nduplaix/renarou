@@ -2,8 +2,8 @@
   <div id="app" class="app">
     <NavBar @showLogin="updateDisplayLogin" @showRegister="updateDisplayRegister"/>
     <router-view @openLogin="updateDisplayLogin" />
-    <register v-if="showRegister" @hideRegister="updateDisplayRegister" />
-    <login v-if="showLogin" @hideLogin="updateDisplayLogin" />
+    <register v-if="showRegister" @hideRegister="updateDisplayRegister" @openLogin="showLogin = true" />
+    <login v-if="showLogin" @hideLogin="updateDisplayLogin" @openRegister="showRegister = true" />
   </div>
 </template>
 

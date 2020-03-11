@@ -16,9 +16,10 @@
           />
         </div>
       </div>
-      <div class="col-md-3 m-3 p-3 cart__shadow">
-        <table class="table table-borderless">
-          <tbody>
+      <div class="col-md-3 m-3">
+        <div class="p-3 cart__shadow">
+          <table class="table table-borderless">
+            <tbody>
             <tr>
               <th>Prix total</th>
               <td align="right" v-if="basket.price === basket.totalWithDiscount">
@@ -58,29 +59,30 @@
                 </select>
               </td>
             </tr>
-          </tbody>
-        </table>
-        <form>
+            </tbody>
+          </table>
+          <form>
+            <div class="form-group">
+              <input type="text" class="form-control" placeholder="CODE PROMO" />
+            </div>
+            <div class="form-group">
+              <button type="submit" class="btn btn-primary">Valider le code promo</button>
+            </div>
+          </form>
           <div class="form-group">
-            <input type="text" class="form-control" placeholder="CODE PROMO" />
+            <button
+              type="button"
+              class="btn btn-secondary"
+              :disabled="basket.basketLines.length <= 0"
+              @click="submitCart"
+              v-if="getUserLogged"
+            >
+              Je passe commande
+            </button>
+            <button type="button" class="btn btn-secondary" @click="submitCart" v-else>
+              Me connecter pour passer ma commande
+            </button>
           </div>
-          <div class="form-group">
-            <button type="submit" class="btn btn-primary">Valider le code promo</button>
-          </div>
-        </form>
-        <div class="form-group">
-          <button
-            type="button"
-            class="btn btn-secondary"
-            :disabled="basket.basketLines.length <= 0"
-            @click="submitCart"
-            v-if="getUserLogged"
-          >
-            Je passe commande
-          </button>
-          <button type="button" class="btn btn-secondary" @click="submitCart" v-else>
-            Me connecter pour passer ma commande
-          </button>
         </div>
       </div>
     </div>
