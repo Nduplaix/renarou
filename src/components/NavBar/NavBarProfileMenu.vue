@@ -7,14 +7,10 @@
       <div class="cart__count" v-if="basket">{{ cartCount() }}</div>
     </li>
     <li class="nav-item">
-      <button type="button" class="btn btn-outline-primary mr-3" @click="$emit('showLogin', true)">
-        Me connecter
-      </button>
-    </li>
-    <li class="nav-item">
-      <button type="button" class="btn btn-outline-primary" @click="$emit('showRegister')">
-        M'inscrire
-      </button>
+      <div class="btn btn-primary mr-3" @click="$emit('showLogin', true)">
+        <i class="fas fa-user icon"></i>
+        <div>Me connecter / M'inscrire</div>
+      </div>
     </li>
   </ul>
   <ul class="navbar-nav mr-0" v-else>

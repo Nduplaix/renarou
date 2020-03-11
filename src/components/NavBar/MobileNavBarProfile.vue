@@ -12,9 +12,9 @@
         </a>
       </li>
     </ul>
-    <div class="row w-100 m-0" v-else>
-      <button type="submit" class="col btn btn-outline-primary" @click="$emit('showLogin')">Me connecter</button>
-      <button type="submit" class="col btn btn-outline-primary" @click="$emit('showRegister')">M'inscrire</button>
+    <div class="d-flex justify-content-center flex-column w-100 m-0" v-else>
+      <button type="submit" class="col btn btn-outline-primary my-3" @click="$emit('showLogin')">Me connecter</button>
+      <button type="submit" class="col btn btn-outline-primary my-3" @click="$emit('showRegister')">M'inscrire</button>
     </div>
   </div>
 </template>

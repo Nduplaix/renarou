@@ -2,6 +2,10 @@
   <div class="register">
     <div class="popin" v-if="currentStep === registerStep">
       <div class="popin-dialog">
+        <div class="popin-dialog-select row">
+          <div class="col" @click="openLogin">Me connecter</div>
+          <div class="col active">M'inscrire</div>
+        </div>
         <span class="h1">Inscription</span>
         <form @submit.prevent="registerSubmit">
           <div class="alert alert-danger mt-3" v-if="registerErrors.length !== 0">
@@ -120,6 +124,10 @@ export default {
       }
 
       return isValid;
+    },
+    openLogin() {
+      this.$emit("hideRegister", false);
+      this.$emit("openLogin");
     }
   }
 };

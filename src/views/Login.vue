@@ -1,6 +1,10 @@
 <template>
   <div id="login" class="login popin">
     <div class="popin-dialog">
+      <div class="popin-dialog-select row">
+        <div class="col active">Me connecter</div>
+        <div class="col" @click="openRegister">M'inscrire</div>
+      </div>
       <span class="h1">Connexion</span>
       <form @submit.prevent="checkForm">
         <div class="alert alert-danger" role="alert" v-if="errorMessage">
@@ -78,6 +82,10 @@ export default {
           console.error(e);
         }
       }
+    },
+    openRegister() {
+      this.$emit("hideLogin", false);
+      this.$emit("openRegister");
     }
   }
 };
