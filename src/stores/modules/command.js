@@ -26,20 +26,16 @@ const actions = {
     commit("setDeliveryModes", await productsApi.get("/deliveries?isActive=true"));
   },
   createPayment: async function({ commit }, { amount, user }) {
-    try {
-      const intent = await stripeApi.post(
-        "/payment_intents",
-        qs.stringify({
-          amount: amount * 100,
-          currency: "eur",
-          description: `Commande pour ${user.firstName} ${user.lastName} (${user.email})`
-        })
-      );
+    const intent = await stripeApi.post(
+      "/payment_intents",
+      qs.stringify({
+        amount: amount * 100,
+        currency: "eur",
+        description: `Commande pour ${user.firstName} ${user.lastName} (${user.email})`
+      })
+    );
 
-      commit("setPaymentIntent", intent);
-    } catch (e) {
-      console.error(e);
-    }
+    commit("setPaymentIntent", intent);
   },
   async createCommand({ dispatch }, { deliveryId, addressId }) {
     const command = await productsApi.post("/create-commande", {

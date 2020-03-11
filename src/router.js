@@ -5,7 +5,14 @@ import Home from "./views/Home";
 import List from "./views/List";
 import Product from "./views/Product";
 import Cart from "./views/Cart";
-import { Addresses, EditPassword, EditProfile, Profile, UserProfile } from "./views/UserProfile";
+import {
+  Addresses,
+  CommandeList,
+  EditPassword,
+  EditProfile,
+  Profile,
+  UserProfile
+} from "./views/UserProfile";
 import Error404 from "./views/Error404";
 import CommandConfirm from "./views/CommandConfirm";
 
@@ -92,7 +99,8 @@ export default new Router({
         },
         {
           path: "commandes",
-          name: "commandes"
+          name: "commandes",
+          component: CommandeList,
         }
       ]
     },

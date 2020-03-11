@@ -122,7 +122,8 @@ export default {
       card: null,
       commandError: false,
       errorMessage: "",
-      commandId: null
+      commandId: null,
+      paymentMethod: null
     };
   },
   watch: {
@@ -160,18 +161,49 @@ export default {
       "updateCommand"
     ]),
     async submitCommand() {
+      await this.stripe
+        .createPaymentMethod({
+          type: "card",
+          card: this.card,
+          billing_details: {
+            name: `${this.currentUser.firstName} ${this.currentUser.lastName}`
+          }
+        })
+        .then(result => {
+          if (result.error) {
+            console.error(result);
+            this.commandError = true;
+            this.errorMessage = result.error.message;
+          } else {
+            this.continuePayment();
+          }
+        });
+    },
+    async getDeliveryModes() {
       try {
+        await this.fetchDeliveryModes();
+      } catch (e) {
+        console.log(e);
+      }
+    },
+    getDeliveryFromId(id) {
+      return this.deliveryModes.find(elem => elem.id === id);
+    },
+    async continuePayment() {
+      try {
+        await this.createPayment({
+          amount:
+            this.currentUser.basket.totalWithDiscount +
+            this.getDeliveryFromId(this.deliveryMode).shippingPrice,
+          user: this.currentUser
+        });
+
         const command = await this.createCommand({
           deliveryId: this.deliveryMode,
           addressId: this.deliveryAddress
         });
 
         this.commandId = command.id;
-
-        await this.createPayment({
-          amount: this.currentUser.basket.totalWithDiscount,
-          user: this.currentUser
-        });
 
         this.stripe
           .confirmCardPayment(this.paymentIntent.client_secret, {
@@ -186,20 +218,16 @@ export default {
             this.paymentSuccess(result);
           });
       } catch (e) {
-        console.error(e);
         this.commandError = true;
-        this.errorMessage = e.data.message;
-      }
-    },
-    async getDeliveryModes() {
-      try {
-        await this.fetchDeliveryModes();
-      } catch (e) {
         console.log(e);
+        if (e.data) {
+          console.error(e);
+          this.errorMessage = e.data.message;
+        } else if (e.response && e.response.data) {
+          console.error(e.response.data);
+          this.errorMessage = e.response.data.message;
+        }
       }
-    },
-    getDeliveryFromId(id) {
-      return this.deliveryModes.find(elem => elem.id === id);
     },
     async paymentSuccess(result) {
       if (result.error) {

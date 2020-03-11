@@ -32,6 +32,21 @@ Vue.mixin({
   }
 });
 
+Vue.filter("formatDate", function(date) {
+  let newDate = new Date(date);
+  let dd = newDate.getDate();
+  let mm = newDate.getMonth() + 1;
+
+  let yyyy = newDate.getFullYear();
+  if (dd < 10) {
+    dd = "0" + dd;
+  }
+  if (mm < 10) {
+    mm = "0" + mm;
+  }
+  return dd + "/" + mm + "/" + yyyy;
+});
+
 Vue.filter("toCurrency", function(value) {
   if (typeof value !== "number") {
     return value;
