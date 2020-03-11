@@ -122,6 +122,7 @@ export default {
   },
   methods: {
     ...mapActions("user", ["addLineToCart"]),
+    ...mapActions("cart", ["addCartLine"]),
     updateQuantity(value) {
       this.quantity = value;
     },
@@ -129,22 +130,22 @@ export default {
       return this.currentProduct.tReferences.find(element => element.id === id);
     },
     async submitCart() {
-      if (this.getUserLogged) {
-        try {
-          const { reference, quantity } = this;
+      try {
+        const { reference, quantity } = this;
+        if (!this.getUserLogged) {
+          this.addCartLine({ reference: this.getReferenceById(this.reference), quantity, product: this.currentProduct });
+        } else {
           await this.addLineToCart({ reference, quantity });
-          this.addToCartValid = true;
-        } catch (e) {
-          this.formErrors = [];
-          if (e.response && e.response.data.code && e.response.data.code === 401) {
-            this.formErrors.push(e.response.data.message);
-          } else {
-            console.error(e);
-            this.addToCartError = true;
-          }
         }
-      } else {
-        this.$emit("openLogin", true);
+        this.addToCartValid = true;
+      } catch (e) {
+        this.formErrors = [];
+        if (e.response && e.response.data.code && e.response.data.code === 401) {
+          this.formErrors.push(e.response.data.message);
+        } else {
+          console.error(e);
+          this.addToCartError = true;
+        }
       }
     }
   }

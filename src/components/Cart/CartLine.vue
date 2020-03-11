@@ -54,7 +54,9 @@ export default {
     InputNumber
   },
   props: {
-    line: { required: true }
+    line: { required: true },
+    userLogged: { required: true },
+    index: { required: true }
   },
   data() {
     return {
@@ -64,16 +66,25 @@ export default {
   },
   methods: {
     ...mapActions("user", ["updateLineCartQuantity", "deleteCartLine"]),
+    ...mapActions("cart", ["removeCartLine", "updateCartQuantity"]),
     updateQuantity(quantity) {
       try {
-        this.updateLineCartQuantity({ id: this.line.id, quantity: parseInt(quantity) });
+        if (this.userLogged) {
+          this.updateLineCartQuantity({ id: this.line.id, quantity: parseInt(quantity) });
+        } else {
+          this.updateCartQuantity({ index: this.index, quantity });
+        }
       } catch (e) {
         this.$emit("error", e);
       }
     },
     deleteLine() {
       try {
-        this.deleteCartLine({ id: this.line.id });
+        if (this.userLogged) {
+          this.deleteCartLine({ id: this.line.id });
+        } else {
+          this.removeCartLine(this.index);
+        }
       } catch (e) {
         this.$emit("error", e);
       }

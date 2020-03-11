@@ -6,12 +6,12 @@
     <div class="col text-center" @click="$emit('selectionMenu', false)">
       <i class="fas fa-user icon"></i>
     </div>
-    <div class="col" v-if="getUserLogged && currentUser">
+    <div class="col" v-if="basket">
       <div class="cart">
         <a type="button" class="nav-link" @click="redirectToCart">
           <i class="fas fa-shopping-cart icon"></i>
         </a>
-        <div class="cart__count" v-if="currentUser.basket">{{ cartCount() }}</div>
+        <div class="cart__count" v-if="basket">{{ cartCount() }}</div>
       </div>
     </div>
   </div>
@@ -21,12 +21,12 @@
 export default {
   props: {
     getUserLogged: { required: true },
-    currentUser: { required: true }
+    basket: { required: true }
   },
   methods: {
     cartCount() {
       let count = 0;
-      this.currentUser.basket.basketLines.forEach(function(line) {
+      this.basket.basketLines.forEach(function(line) {
         count += line.quantity;
       });
 

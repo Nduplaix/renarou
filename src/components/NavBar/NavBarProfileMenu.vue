@@ -1,5 +1,11 @@
 <template>
-  <ul class="navbar-nav mr-0" v-if="!getUserLogged">
+  <ul class="navbar-nav mr-0 align-items-center" v-if="!getUserLogged">
+    <li class="nav-item cart mr-3">
+      <router-link class="nav-link" :to="{ name: 'cart' }">
+        <i class="fas fa-shopping-cart cart__icon"></i>
+      </router-link>
+      <div class="cart__count" v-if="basket">{{ cartCount() }}</div>
+    </li>
     <li class="nav-item">
       <button type="button" class="btn btn-outline-primary mr-3" @click="$emit('showLogin', true)">
         Me connecter
@@ -16,7 +22,7 @@
       <router-link class="nav-link" :to="{ name: 'cart' }">
         <i class="fas fa-shopping-cart cart__icon"></i>
       </router-link>
-      <div class="cart__count" v-if="currentUser.basket">{{ cartCount() }}</div>
+      <div class="cart__count" v-if="basket">{{ cartCount() }}</div>
     </li>
     <li class="nav-item dropdown">
       <a
@@ -47,12 +53,13 @@
 export default {
   props: {
     getUserLogged: { required: true },
-    currentUser: { required: true }
+    currentUser: { required: true },
+    basket: { required: true }
   },
   methods: {
     cartCount() {
       let count = 0;
-      this.currentUser.basket.basketLines.forEach(function(line) {
+      this.basket.basketLines.forEach(function(line) {
         count += line.quantity;
       });
 

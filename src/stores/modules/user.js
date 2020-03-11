@@ -49,7 +49,13 @@ const actions = {
       password
     });
     commit("setToken", { token: response.data.token, stayConnect });
-    dispatch("fetchCurrentUser");
+
+    if (localStorage.getItem("cart")) {
+      await productsApi.post("/basket/merge", JSON.parse(localStorage.getItem("cart")));
+    }
+
+    localStorage.removeItem("cart");
+    await dispatch("fetchCurrentUser");
   },
 
   async fetchCurrentUser({ commit, getters }) {
@@ -78,7 +84,7 @@ const actions = {
     dispatch("getAuthToken", { username: email, password });
   },
 
-  async updateUser({commit}, {id, email, firstName, lastName}) {
+  async updateUser({ commit }, { id, email, firstName, lastName }) {
     const response = await productsApi.patch(`/users/${id}`, {
       email,
       firstName,
