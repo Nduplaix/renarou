@@ -100,6 +100,7 @@
     <validation-pop-up type="danger" v-if="commandError" @close="commandError = false">
       Une erreur est survenue lors de votre commande. {{ errorMessage }}
     </validation-pop-up>
+    <loading v-if="loading"/>
   </div>
 </template>
 
@@ -107,11 +108,13 @@
 import { mapGetters, mapActions } from "vuex";
 import ValidationPopUp from "../components/PopUp/ValidationPopUp";
 import CommandLine from "../components/Cart/CommandLine";
+import Loading from "../components/Loading";
 
 export default {
   components: {
     ValidationPopUp,
-    CommandLine
+    CommandLine,
+    Loading
   },
   computed: {
     ...mapGetters("user", ["currentUser"]),
@@ -142,7 +145,8 @@ export default {
           id: 2,
           label: "Espèce lors du retrait"
         }
-      ]
+      ],
+      loading: false
     };
   },
   watch: {
@@ -180,6 +184,7 @@ export default {
       "updateCommand"
     ]),
     async submitCommand() {
+      this.loading = true;
       if (this.deliveryMode === 2 && this.currentPayment === 2) {
         try {
           await this.sendCommand();
@@ -199,6 +204,7 @@ export default {
           })
           .then(result => {
             if (result.error) {
+              this.loading = false;
               console.error(result);
               this.commandError = true;
               this.errorMessage = result.error.message;
@@ -242,6 +248,7 @@ export default {
             this.paymentSuccess(result);
           });
       } catch (e) {
+        this.loading = false;
         this.commandError = true;
         console.log(e);
         if (e.data) {
@@ -255,6 +262,7 @@ export default {
     },
     async paymentSuccess(result) {
       if (result.error) {
+        this.loading = false;
         // Show error to your customer
         console.log(result.error.message);
         this.commandError = true;

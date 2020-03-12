@@ -15,6 +15,7 @@ import {
 } from "./views/UserProfile";
 import Error404 from "./views/Error404";
 import CommandConfirm from "./views/CommandConfirm";
+import Command from "./views/Command";
 
 Vue.use(Router);
 
@@ -100,7 +101,12 @@ export default new Router({
         {
           path: "commandes",
           name: "commandes",
-          component: CommandeList,
+          component: CommandeList
+        },
+        {
+          path: "commande/:id",
+          name: "commandShow",
+          component: Command
         }
       ]
     },

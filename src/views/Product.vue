@@ -73,6 +73,7 @@
     <validation-pop-up type="danger" v-if="addToCartError" @close="addToCartError = false">
       Une erreur est survenue. Nous nous excusons pour la gène occasionné.
     </validation-pop-up>
+    <loading v-if="loading"/>
   </div>
 </template>
 
@@ -83,6 +84,7 @@ import { ProductPrice } from "../components/Product";
 import { NewTag, DiscountTag } from "../components/Tags";
 import ValidationPopUp from "../components/PopUp/ValidationPopUp";
 import { mapGetters, mapActions } from "vuex";
+import Loading from "../components/Loading";
 
 export default {
   components: {
@@ -91,7 +93,8 @@ export default {
     ProductPrice,
     NewTag,
     DiscountTag,
-    ValidationPopUp
+    ValidationPopUp,
+    Loading
   },
   computed: {
     ...mapGetters(["currentProduct"]),
@@ -105,7 +108,8 @@ export default {
       minQuantity: 0,
       formErrors: [],
       addToCartValid: false,
-      addToCartError: false
+      addToCartError: false,
+      loading: false
     };
   },
   mounted() {
@@ -130,15 +134,22 @@ export default {
       return this.currentProduct.tReferences.find(element => element.id === id);
     },
     async submitCart() {
+      this.loading = true;
       try {
         const { reference, quantity } = this;
         if (!this.getUserLogged) {
-          this.addCartLine({ reference: this.getReferenceById(this.reference), quantity, product: this.currentProduct });
+          await this.addCartLine({
+            reference: this.getReferenceById(this.reference),
+            quantity,
+            product: this.currentProduct
+          });
         } else {
           await this.addLineToCart({ reference, quantity });
         }
+        this.loading = false;
         this.addToCartValid = true;
       } catch (e) {
+        this.loading = false;
         this.formErrors = [];
         if (e.response && e.response.data.code && e.response.data.code === 401) {
           this.formErrors.push(e.response.data.message);
