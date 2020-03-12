@@ -78,14 +78,22 @@
         </div>
         <div>
           <span class="h1">Paiement</span>
-          <div class="col-md-4 offset-md-4">
+          <div class="form-group col-md-4 offset-md-4" v-if="deliveryMode === 2">
+            <label for="payment-select">Moyen de paiement</label>
+            <select v-model="currentPayment" class="form-control" id="payment-select">
+              <option :value="payment.id" v-for="(payment, index) in payments" :key="index">
+                {{ payment.label }}
+              </option>
+            </select>
+          </div>
+          <div class="col-md-4 offset-md-4" v-if="currentPayment === 1">
             <div id="card-element" class="my-3"><!-- Card number input--></div>
 
             <!-- We'll put the error messages in this element -->
             <div id="card-errors" role="alert" class="my-3"></div>
-
-            <button id="submit" class="btn btn-primary my-3">Valider et payer</button>
           </div>
+
+          <button id="submit" class="btn btn-primary my-3">Valider et payer</button>
         </div>
       </div>
     </form>
@@ -123,7 +131,18 @@ export default {
       commandError: false,
       errorMessage: "",
       commandId: null,
-      paymentMethod: null
+      paymentMethod: null,
+      currentPayment: 1,
+      payments: [
+        {
+          id: 1,
+          label: "Carte bancaire"
+        },
+        {
+          id: 2,
+          label: "Espèce lors du retrait"
+        }
+      ]
     };
   },
   watch: {
@@ -161,23 +180,33 @@ export default {
       "updateCommand"
     ]),
     async submitCommand() {
-      await this.stripe
-        .createPaymentMethod({
-          type: "card",
-          card: this.card,
-          billing_details: {
-            name: `${this.currentUser.firstName} ${this.currentUser.lastName}`
-          }
-        })
-        .then(result => {
-          if (result.error) {
-            console.error(result);
-            this.commandError = true;
-            this.errorMessage = result.error.message;
-          } else {
-            this.continuePayment();
-          }
-        });
+      if (this.deliveryMode === 2 && this.currentPayment === 2) {
+        try {
+          await this.sendCommand();
+          this.$router.push({ name: "home" });
+        } catch (e) {
+          console.error(e.response.data);
+          this.errorMessage = e.response.data.message;
+        }
+      } else {
+        await this.stripe
+          .createPaymentMethod({
+            type: "card",
+            card: this.card,
+            billing_details: {
+              name: `${this.currentUser.firstName} ${this.currentUser.lastName}`
+            }
+          })
+          .then(result => {
+            if (result.error) {
+              console.error(result);
+              this.commandError = true;
+              this.errorMessage = result.error.message;
+            } else {
+              this.continuePayment();
+            }
+          });
+      }
     },
     async getDeliveryModes() {
       try {
@@ -198,12 +227,7 @@ export default {
           user: this.currentUser
         });
 
-        const command = await this.createCommand({
-          deliveryId: this.deliveryMode,
-          addressId: this.deliveryAddress
-        });
-
-        this.commandId = command.id;
+        this.commandId = await this.sendCommand();
 
         this.stripe
           .confirmCardPayment(this.paymentIntent.client_secret, {
@@ -247,6 +271,14 @@ export default {
           }
         }
       }
+    },
+    async sendCommand() {
+      const command = await this.createCommand({
+        deliveryId: this.deliveryMode,
+        addressId: this.deliveryAddress
+      });
+
+      return command.id;
     },
     updateDeliveryAddress() {
       localStorage.setItem("delivery", this.deliveryMode);
