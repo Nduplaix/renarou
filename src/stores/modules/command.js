@@ -4,12 +4,14 @@ import qs from "querystring";
 const state = {
   deliveryModes: {},
   paymentIntent: {},
-  customer: {}
+  customer: {},
+  currentCommand: {}
 };
 
 const getters = {
   deliveryModes: state => state.deliveryModes,
-  paymentIntent: state => state.paymentIntent
+  paymentIntent: state => state.paymentIntent,
+  currentCommand: state => state.currentCommand
 };
 
 const mutations = {
@@ -19,6 +21,9 @@ const mutations = {
   setPaymentIntent(state, response) {
     state.paymentIntent = response.data;
   },
+  setCurrentCommand(state, response) {
+    state.currentCommand = response.data;
+  }
 };
 
 const actions = {
@@ -53,6 +58,9 @@ const actions = {
     });
 
     dispatch("user/fetchCurrentUser", null, { root: true });
+  },
+  async fetchCurrentCommand({ commit }, { id }) {
+    commit("setCurrentCommand", await productsApi.get(`/commandes/${id}`));
   }
 };
 

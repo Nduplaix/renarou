@@ -34,8 +34,6 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
-
 export default {
   props: {
     line: { required: true }

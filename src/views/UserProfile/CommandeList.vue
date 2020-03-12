@@ -2,42 +2,47 @@
   <div class="command-list">
     <div class="text-center">
       <span class="h1">Liste de mes commandes</span>
-      <div
-        v-for="(command, index) in currentUser.commandes.reverse()"
-        :key="index"
-        class="command-list__item row border p-3 my-3"
-      >
-        <div class="col-md">
-          <p>
-            Commande <span class="font-weight-bold">n°{{ command.id }}</span>
-          </p>
-          <p>
-            Status de la commande : <br>
-            <span class="font-weight-bold" :class="statusStyle(command.status.id)">
-              {{ command.status.label }}
-            </span>
-          </p>
-          <p>
-            Réalisé le <span class="font-weight-bold">{{ command.createdAt | formatDate }}</span>
-          </p>
-        </div>
-        <div class="col-md">
-          <p>
-            Prix de la commande :
-            <span class="font-weight-bold">{{ command.priceWithDiscount | toCurrency }}</span>
-          </p>
-          <p>
-            Nombre d'article : <span class="font-weight-bold">{{ command.productCount }}</span>
-          </p>
-          <p>
-            Mode de livraison : <span class="font-weight-bold">{{ command.delivery.label }}</span>
-          </p>
-        </div>
-        <div class="col-md-2">
-          <button class="btn btn-primary">
-            <i class="fas fa-eye"></i>
-            Voir
-          </button>
+      <div v-if="currentUser.commandes">
+        <div
+          v-for="(command, index) in currentUser.commandes.reverse()"
+          :key="index"
+          class="command-list__item row border p-3 my-3"
+        >
+          <div class="col-md">
+            <p>
+              Commande <span class="font-weight-bold">n°{{ command.id }}</span>
+            </p>
+            <p>
+              Status de la commande : <br>
+              <span class="font-weight-bold" :class="statusStyle(command.status.id)">
+                {{ command.status.label }}
+              </span>
+            </p>
+            <p>
+              Réalisé le <span class="font-weight-bold">{{ command.createdAt | formatDate }}</span>
+            </p>
+          </div>
+          <div class="col-md">
+            <p>
+              Prix de la commande :
+              <span class="font-weight-bold">{{ command.priceWithDiscount | toCurrency }}</span>
+            </p>
+            <p>
+              Nombre d'article : <span class="font-weight-bold">{{ command.productCount }}</span>
+            </p>
+            <p>
+              Mode de livraison : <span class="font-weight-bold">{{ command.delivery.label }}</span>
+            </p>
+          </div>
+          <div class="col-md-2">
+            <router-link
+              class="btn btn-primary"
+              :to="{ name: 'commandShow', params: { id: command.id } }"
+            >
+              <i class="fas fa-eye"></i>
+              Voir
+            </router-link>
+          </div>
         </div>
       </div>
     </div>

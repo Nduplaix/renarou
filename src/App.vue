@@ -15,8 +15,8 @@ import { mapActions } from "vuex";
 
 export default {
   components: { Login, NavBar, Register },
-  mounted() {
-    this.setStorageToken();
+  async mounted() {
+    await this.setStorageToken();
     this.getCategories();
   },
   data() {

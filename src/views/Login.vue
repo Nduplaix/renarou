@@ -52,24 +52,31 @@
         </button>
       </form>
     </div>
+    <loading v-if="loading"/>
   </div>
 </template>
 
 <script>
 import { mapActions } from "vuex";
+import Loading from "../components/Loading";
 
 export default {
+  components: {
+    Loading
+  },
   data: () => {
     return {
       username: "",
       password: "",
       stayConnect: true,
-      errorMessage: null
+      errorMessage: null,
+      loading: false
     };
   },
   methods: {
     ...mapActions("user", ["getAuthToken"]),
     async checkForm() {
+      this.loading = true;
       const { username, password, stayConnect } = this;
       this.errorMessage = null;
       try {
@@ -82,6 +89,7 @@ export default {
           console.error(e);
         }
       }
+      this.loading = false;
     },
     openRegister() {
       this.$emit("hideLogin", false);
