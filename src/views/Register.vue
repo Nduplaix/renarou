@@ -1,10 +1,13 @@
 <template>
   <div class="register">
     <div class="popin" v-if="currentStep === registerStep">
+      <div class="popin-dialog-select row">
+        <div class="col" @click="openLogin">Me connecter</div>
+        <div class="col active">M'inscrire</div>
+      </div>
       <div class="popin-dialog">
-        <div class="popin-dialog-select row">
-          <div class="col" @click="openLogin">Me connecter</div>
-          <div class="col active">M'inscrire</div>
+        <div class="popin-dialog-close" @click="$emit('hideRegister', false)">
+          <i class="fas fa-times"></i>
         </div>
         <span class="h1">Inscription</span>
         <form @submit.prevent="registerSubmit">

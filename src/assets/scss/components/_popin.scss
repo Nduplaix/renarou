@@ -14,13 +14,28 @@
   justify-content: center;
 
   &-dialog {
+    position: relative;
     border-radius: $wd-border-radius-medium;
     min-width: 400px;
+    max-height: 90vh;
+    max-width: 95vw;
+    overflow: scroll;
     background-color: $wd-white;
     padding: $wd-padding-3 $wd-padding-5;
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    &-close {
+      color: rgba(#000, 0.3);
+      position: absolute;
+      right: $wd-margin-3;
+      top: $wd-margin-3;
+    }
+
     &-select {
-      position: relative;
-      top: calc(-#{$wd-height-xsmall} + -#{$wd-padding-3});
+      min-width: 350px;
       div {
         cursor: pointer;
         color: $wd-white;
