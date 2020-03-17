@@ -8,8 +8,7 @@
     </li>
     <li class="nav-item">
       <div class="btn btn-primary mr-3" @click="$emit('showLogin', true)">
-        <i class="fas fa-user icon"></i>
-        <div>Me connecter / M'inscrire</div>
+        <div><i class="fas fa-user"></i> Me connecter / M'inscrire</div>
       </div>
     </li>
   </ul>
@@ -71,7 +70,7 @@ export default {
   position: relative;
   width: 3rem;
   &__icon {
-    font-size: 2rem;
+    font-size: 1.5rem;
   }
   &__count {
     position: absolute;
