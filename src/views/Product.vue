@@ -1,5 +1,5 @@
 <template>
-  <div class="container mt-5">
+  <div class="container py-5">
     <div class="row">
       <div class="col-md-6  ">
         <carousel :images="currentProduct.images" />
@@ -57,7 +57,7 @@
 
             <button
               type="submit"
-              class="btn btn-outline-primary"
+              class="btn btn-primary"
               :class="{ disabled: maxQuantity === 0 }"
               :disabled="maxQuantity === 0"
             >

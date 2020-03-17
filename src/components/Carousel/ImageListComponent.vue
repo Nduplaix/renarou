@@ -1,5 +1,5 @@
 <template>
-  <div class="img-list-content mx-2 rounded-circle" @click="updateImage">
+  <div class="img-list-content mx-2 rounded" @click="updateImage">
     <img :src="imageLink" :alt="imageAlt" />
   </div>
 </template>
