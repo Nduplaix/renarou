@@ -26,6 +26,10 @@ body {
     .btn-primary, .btn-secondary, .btn-outline-primary:hover {
       color: $wd-white;
     }
+
+    .nav-link--mobile {
+      font-size: $wd-h2-font-size;
+    }
   }
 }
 

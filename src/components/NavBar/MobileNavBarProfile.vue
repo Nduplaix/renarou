@@ -2,19 +2,19 @@
   <div class="w-100">
     <ul class="navbar-nav" v-if="getUserLogged">
       <li class="nav-item" v-for="(link, index) in userLinks()" :key="index">
-        <a type="button" class="nav-link" @click="closeMenu(link)">
+        <a type="button" class="nav-link nav-link--mobile" @click="closeMenu(link)">
           {{ link.label }}
         </a>
       </li>
       <li class="nav-item">
-        <a type="button" class="nav-link" @click="$emit('logout')">
+        <a type="button" class="nav-link nav-link--mobile text-primary" @click="$emit('logout')">
           Deconnexion
         </a>
       </li>
     </ul>
     <div class="d-flex justify-content-center flex-column w-100 m-0" v-else>
-      <button type="submit" class="col btn btn-outline-primary my-3" @click="$emit('showLogin')">Me connecter</button>
-      <button type="submit" class="col btn btn-outline-primary my-3" @click="$emit('showRegister')">M'inscrire</button>
+      <button type="submit" class="col btn btn-primary my-3" @click="$emit('showLogin')">Me connecter</button>
+      <button type="submit" class="col btn btn-primary my-3" @click="$emit('showRegister')">M'inscrire</button>
     </div>
   </div>
 </template>

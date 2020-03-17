@@ -27,8 +27,8 @@
       }"
       v-if="displayMenu"
     >
-      <div v-if="isMobile()" class="mb-3">
-        <a type="button" class="item-link" @click="displayMenu = false">
+      <div v-if="isMobile()" class="mb-3 item-close text-center">
+        <a type="button" class="btn btn-secondary" @click="displayMenu = false">
           <i class="fas fa-times"></i> Fermer
         </a>
       </div>
@@ -163,6 +163,13 @@ nav {
 
   .collapse-mobile {
     height: calc(101vh - #{$wd-navbar-height});
+  }
+
+  .item-close {
+    position: absolute;
+    bottom: $wd-width-small;
+    left: 0;
+    width: 100%;
   }
 
   .cart {

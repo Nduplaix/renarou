@@ -1,11 +1,11 @@
 <template>
   <ul class="navbar-nav" :class="isMobile() ? 'w-100' : 'mr-auto'">
     <li class="nav-item" v-if="isMobile()">
-      <a type="button" class="nav-link" @click="homePush">Accueil</a>
+      <a type="button" class="nav-link nav-link--mobile" @click="homePush">Accueil</a>
     </li>
     <li class="nav-item dropdown" v-for="(category, index) in getCategories" :key="index">
       <a
-        class="nav-link dropdown-toggle"
+        class="nav-link nav-link--mobile dropdown-toggle"
         href="#"
         :id="`navbarDropdown-${index}`"
         role="button"
