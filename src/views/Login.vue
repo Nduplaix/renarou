@@ -18,7 +18,7 @@
             Adresse email
           </label>
           <input
-            type="text"
+            type="email"
             class="form-control"
             id="username"
             name="username"

@@ -86,7 +86,7 @@
               </option>
             </select>
           </div>
-          <div class="col-md-4 offset-md-4" v-if="currentPayment === 1">
+          <div class="col-md-4 offset-md-4" v-show="currentPayment === 1">
             <div id="card-element" class="my-3"><!-- Card number input--></div>
 
             <!-- We'll put the error messages in this element -->
@@ -289,6 +289,7 @@ export default {
       return command.id;
     },
     updateDeliveryAddress() {
+      this.currentPayment = 1;
       localStorage.setItem("delivery", this.deliveryMode);
     }
   }
