@@ -18,7 +18,7 @@
           </div>
           <div class="form-group">
             <label for="email">Adresse e-mail</label>
-            <input type="text" id="email" class="form-control" v-model="email">
+            <input type="email" id="email" class="form-control" v-model="email">
           </div>
           <div class="form-group">
             <label for="firstName">Prénom</label>
