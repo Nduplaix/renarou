@@ -118,7 +118,7 @@ const actions = {
       user: `/api/users/${getters.currentUser.id}`
     });
 
-    dispatch("fetchCurrentUser");
+    await dispatch("fetchCurrentUser");
   },
 
   async editAddress({ dispatch }, { id, number, streetType, street, city, postalCode }) {
@@ -130,13 +130,13 @@ const actions = {
       postalCode
     });
 
-    dispatch("fetchCurrentUser");
+    await dispatch("fetchCurrentUser");
   },
 
   async removeAddress({ dispatch }, { id }) {
     await productsApi.delete(`/addresses/${id}`);
 
-    dispatch("fetchCurrentUser");
+    await dispatch("fetchCurrentUser");
   },
 
   async addLineToCart({ dispatch, getters }, { reference, quantity }) {
@@ -147,19 +147,19 @@ const actions = {
       basket: `/api/baskets/${basket}`
     });
 
-    dispatch("fetchCurrentUser");
+    await dispatch("fetchCurrentUser");
   },
 
   async updateLineCartQuantity({ dispatch }, { id, quantity }) {
     await productsApi.patch(`/basket_lines/${id}`, { quantity });
 
-    dispatch("fetchCurrentUser");
+    await dispatch("fetchCurrentUser");
   },
 
   async deleteCartLine({ dispatch }, { id }) {
     await productsApi.delete(`/basket_lines/${id}`);
 
-    dispatch("fetchCurrentUser");
+    await dispatch("fetchCurrentUser");
   }
 };
 

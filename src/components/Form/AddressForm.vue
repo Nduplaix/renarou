@@ -1,6 +1,6 @@
 <template>
   <div class="popin">
-    <div class="popin-dialog text-center">
+    <div class="popin-dialog" :class="{ 'text-center': !isMobile() }">
       <span class="h1"><slot>Informations de livraison</slot></span>
       <form @submit.prevent="addressSubmit">
         <div class="alert alert-danger mt-3" v-if="addressErrors.length !== 0">
@@ -9,7 +9,7 @@
           </div>
         </div>
         <div class="form-row mt-3">
-          <div class="col-md-3">
+          <div class="col-md-3 form-group">
             <label for="number">numéro</label>
             <input
               type="text"
@@ -19,13 +19,13 @@
               id="number"
             />
           </div>
-          <div class="col-md-3">
+          <div class="col-md-3 form-group">
             <label for="streetType">type de voie</label>
             <select class="form-control" v-model="internalStreetTypeSelected" id="streetType">
               <option v-for="(type, index) in streetType" :key="index">{{ type }}</option>
             </select>
           </div>
-          <div class="col">
+          <div class="col form-group">
             <label for="street">nom de la voie</label>
             <input
               type="text"
@@ -37,7 +37,7 @@
           </div>
         </div>
         <div class="form-row mt-3">
-          <div class="col-md-4">
+          <div class="col-md-4 form-group">
             <label for="postalCode">Code postal</label>
             <input
               type="text"
@@ -47,7 +47,7 @@
               v-model="internalPostalCode"
             />
           </div>
-          <div class="col">
+          <div class="col form-group">
             <label for="city">Ville</label>
             <input
               type="text"
@@ -74,11 +74,13 @@
         </div>
       </form>
     </div>
+    <Loading v-if="loading" />
   </div>
 </template>
 
 <script>
 import { mapActions } from "vuex";
+import Loading from "../Loading";
 
 export default {
   props: {
@@ -99,16 +101,21 @@ export default {
       internalCity: this.city,
       streetType: ["rue", "impasse", "avenue", "boulevard"],
       internalStreetTypeSelected: this.streetTypeSelected,
-      addressErrors: []
+      addressErrors: [],
+      loading: false
     };
+  },
+  components: {
+    Loading
   },
   methods: {
     ...mapActions("user", ["editAddress", "createAddress"]),
     async addressSubmit() {
+      this.loading = true;
       if (this.addressIsValid()) {
         try {
           if (!this.edit) {
-            this.createAddress({
+            await this.createAddress({
               number: this.internalNumber,
               street: this.internalStreet,
               streetType: this.internalStreetTypeSelected,
@@ -116,7 +123,7 @@ export default {
               postalCode: this.internalPostalCode
             });
           } else {
-            this.editAddress({
+            await this.editAddress({
               id: this.id,
               number: this.internalNumber,
               street: this.internalStreet,
@@ -134,6 +141,7 @@ export default {
           }
         }
       }
+      this.loading = false;
     },
     addressIsValid() {
       let isValid = true;
