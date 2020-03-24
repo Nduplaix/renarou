@@ -2,9 +2,9 @@
   <div class="command-list">
     <div class="text-center">
       <span class="h1">Liste de mes commandes</span>
-      <div v-if="currentUser.commandes">
+      <div v-if="commandes">
         <div
-          v-for="(command, index) in currentUser.commandes.reverse()"
+          v-for="(command, index) in commandes"
           :key="index"
           class="command-list__item row border p-3 my-3"
         >
@@ -55,6 +55,23 @@ import { mapGetters } from "vuex";
 export default {
   computed: {
     ...mapGetters("user", ["currentUser"])
+  },
+  mounted() {
+    if (this.currentUser && this.currentUser.commandes) {
+      this.commandes = this.currentUser.commandes.reverse();
+    }
+  },
+  watch: {
+    currentUser() {
+      if (this.currentUser.commandes) {
+        this.commandes = this.currentUser.commandes.reverse();
+      }
+    }
+  },
+  data() {
+    return {
+      commandes: null
+    };
   },
   methods: {
     statusStyle(statusId) {

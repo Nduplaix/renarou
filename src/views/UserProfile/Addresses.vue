@@ -4,12 +4,13 @@
       <span class="h1">Gérer mes adresses</span>
     </div>
     <addresses-list
+      v-if="currentUser && currentUser.addresses"
       :addresses="currentUser.addresses"
       :edit="true"
       @edit="updateAddress"
       @remove="deleteAddress"
     />
-    <button type="button" class="btn btn-info mt-3" @click="updateDisplayCreate">
+    <button type="button" class="btn btn-primary mt-3" @click="updateDisplayCreate">
       <i class="fas fa-plus"></i> Ajouter une adresse
     </button>
     <address-form
@@ -48,6 +49,7 @@
         </button>
       </div>
     </pop-up>
+    <Loading v-if="loading" />
   </div>
 </template>
 
@@ -56,12 +58,14 @@ import { mapGetters, mapActions } from "vuex";
 import AddressesList from "../../components/Addresses/AddressesList";
 import AddressForm from "../../components/Form/AddressForm";
 import PopUp from "../../components/PopUp/PopUp";
+import Loading from "../../components/Loading";
 
 export default {
   components: {
     PopUp,
     AddressForm,
-    AddressesList
+    AddressesList,
+    Loading
   },
   computed: {
     ...mapGetters("user", ["currentUser"])
@@ -73,7 +77,8 @@ export default {
       addressToDeleteId: null,
       showEdit: false,
       showCreate: false,
-      showDelete: false
+      showDelete: false,
+      loading: false
     };
   },
   watch: {
@@ -95,10 +100,12 @@ export default {
       this.addressToDeleteId = id;
       this.updateDisplayDelete();
     },
-    confirmDelete() {
-      this.removeAddress({ id: this.addressToDeleteId });
+    async confirmDelete() {
+      this.loading = true;
+      await this.removeAddress({ id: this.addressToDeleteId });
       this.addressToDeleteId = null;
       this.updateDisplayDelete(false);
+      this.loading = false;
     },
     updateDisplayEdit(show = true) {
       if (!show) {
