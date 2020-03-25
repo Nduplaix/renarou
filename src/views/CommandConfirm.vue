@@ -36,6 +36,9 @@
                 {{ address.fullAddress }}
               </option>
             </select>
+            <button type="button" class="btn btn-primary mt-3" @click="showAddressForm = true">
+              <i class="fas fa-plus"></i> Ajouter une nouvelle adresse
+            </button>
           </div>
         </div>
         <div v-if="currentUser && currentUser.basket">
@@ -100,6 +103,13 @@
     <validation-pop-up type="danger" v-if="commandError" @close="commandError = false">
       Une erreur est survenue lors de votre commande. {{ errorMessage }}
     </validation-pop-up>
+    <address-form
+      v-if="showAddressForm"
+      cancel-button-label="Annuler"
+      @hideAddress="showAddressForm = false"
+    >
+      Ajouter une adresse
+    </address-form>
     <loading v-if="loading"/>
   </div>
 </template>
@@ -109,12 +119,14 @@ import { mapGetters, mapActions } from "vuex";
 import ValidationPopUp from "../components/PopUp/ValidationPopUp";
 import CommandLine from "../components/Cart/CommandLine";
 import Loading from "../components/Loading";
+import AddressForm from "../components/Form/AddressForm";
 
 export default {
   components: {
     ValidationPopUp,
     CommandLine,
-    Loading
+    Loading,
+    AddressForm
   },
   computed: {
     ...mapGetters("user", ["currentUser"]),
@@ -146,6 +158,7 @@ export default {
           label: "Espèce lors du retrait"
         }
       ],
+      showAddressForm: false,
       loading: false
     };
   },
