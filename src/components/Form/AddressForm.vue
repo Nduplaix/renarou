@@ -36,6 +36,10 @@
             />
           </div>
         </div>
+        <div class="mt-3 form-group">
+          <label for="complement">Complément d'adresse</label>
+          <textarea rows="2" id="complement" v-model="internalComplement" />
+        </div>
         <div class="form-row mt-3">
           <div class="col-md-4 form-group">
             <label for="postalCode">Code postal</label>
@@ -88,6 +92,7 @@ export default {
     number: { default: "" },
     streetTypeSelected: { default: "" },
     street: { default: "" },
+    complement: { default: "" },
     city: { default: "" },
     postalCode: { default: "" },
     cancelButtonLabel: { default: "Plus tard" },
@@ -97,6 +102,7 @@ export default {
     return {
       internalNumber: this.number,
       internalStreet: this.street,
+      internalComplement: this.complement,
       internalPostalCode: this.postalCode,
       internalCity: this.city,
       streetType: ["rue", "impasse", "avenue", "boulevard"],
@@ -119,6 +125,7 @@ export default {
               number: this.internalNumber,
               street: this.internalStreet,
               streetType: this.internalStreetTypeSelected,
+              complement: this.internalComplement,
               city: this.internalCity,
               postalCode: this.internalPostalCode
             });
@@ -128,6 +135,7 @@ export default {
               number: this.internalNumber,
               street: this.internalStreet,
               streetType: this.internalStreetTypeSelected,
+              complement: this.internalComplement,
               city: this.internalCity,
               postalCode: this.internalPostalCode
             });

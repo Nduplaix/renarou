@@ -108,11 +108,12 @@ const actions = {
     });
   },
 
-  async createAddress({ getters, dispatch }, { number, streetType, street, city, postalCode }) {
+  async createAddress({ getters, dispatch }, { number, streetType, street, complement, city, postalCode }) {
     await productsApi.post("/addresses", {
       number,
       streetType,
       street,
+      complement,
       city,
       postalCode,
       user: `/api/users/${getters.currentUser.id}`
@@ -121,11 +122,12 @@ const actions = {
     await dispatch("fetchCurrentUser");
   },
 
-  async editAddress({ dispatch }, { id, number, streetType, street, city, postalCode }) {
+  async editAddress({ dispatch }, { id, number, streetType, street, complement, city, postalCode }) {
     await productsApi.patch(`/addresses/${id}`, {
       number,
       streetType,
       street,
+      complement,
       city,
       postalCode
     });

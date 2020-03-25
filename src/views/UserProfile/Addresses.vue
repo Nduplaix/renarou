@@ -26,6 +26,7 @@
       :number="selectedAddress.number"
       :street="selectedAddress.street"
       :street-type-selected="selectedAddress.streetType"
+      :complement="selectedAddress.complement"
       :postal-code="selectedAddress.postalCode"
       :city="selectedAddress.city"
       cancel-button-label="Annuler"

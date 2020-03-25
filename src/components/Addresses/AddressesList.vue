@@ -4,8 +4,7 @@
       <tr class="border px-3" v-for="(address, index) in addresses" :key="index">
         <th>Adresse n°{{ index + 1 }}</th>
         <td class="address__table__label">
-          {{ address.number }} {{ address.streetType }} {{ address.street }},
-          {{ address.postalCode }} {{ address.city }}
+          {{ address.fullAddress }}
         </td>
         <td class="address__table__action" v-if="edit">
           <button type="button" class="btn btn-primary" @click="$emit('edit', index)">
