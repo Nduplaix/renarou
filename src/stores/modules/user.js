@@ -162,6 +162,10 @@ const actions = {
     await productsApi.delete(`/basket_lines/${id}`);
 
     await dispatch("fetchCurrentUser");
+  },
+
+  async emailActivation({}, { token }) {
+    await productsApi.post("/active-mail", { token });
   }
 };
 

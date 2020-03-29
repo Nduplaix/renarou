@@ -16,6 +16,7 @@ import {
 import Error404 from "./views/Error404";
 import CommandConfirm from "./views/CommandConfirm";
 import Command from "./views/Command";
+import EmailActivation from "./views/EmailActivation";
 
 Vue.use(Router);
 
@@ -124,6 +125,11 @@ export default new Router({
       path: "/404",
       name: "404",
       component: Error404
+    },
+    {
+      path: "/activation",
+      name: "email-activation",
+      component: EmailActivation
     }
   ]
 });

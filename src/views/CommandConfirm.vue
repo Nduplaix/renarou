@@ -203,7 +203,8 @@ export default {
           await this.sendCommand();
           this.$router.push({ name: "home" });
         } catch (e) {
-          console.error(e.response.data);
+          this.loading = false;
+          this.commandError = true;
           this.errorMessage = e.response.data.message;
         }
       } else {
@@ -218,7 +219,6 @@ export default {
           .then(result => {
             if (result.error) {
               this.loading = false;
-              console.error(result);
               this.commandError = true;
               this.errorMessage = result.error.message;
             } else {
