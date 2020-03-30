@@ -166,6 +166,18 @@ const actions = {
 
   async emailActivation({}, { token }) {
     await productsApi.post("/active-mail", { token });
+  },
+
+  async sendResetPassword({}, { email }) {
+    await productsApi.post("/send-reset-password", { email });
+  },
+
+  async resetPassword({}, { token, password, confirmPassword }) {
+    await productsApi.post("/reset-password", {
+      token,
+      password,
+      confirmPassword
+    });
   }
 };
 

@@ -31,7 +31,6 @@ export default {
   mounted() {
     // const token = this.$route.params.token;
     const token = (new URLSearchParams(window.location.search)).get('token');
-    console.log(token);
 
     this.activeMail(token);
   },
