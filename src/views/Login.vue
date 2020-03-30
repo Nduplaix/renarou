@@ -4,7 +4,7 @@
       <div class="col active">Me connecter</div>
       <div class="col" @click="openRegister">M'inscrire</div>
     </div>
-    <div class="popin-dialog">
+    <div class="popin-dialog" v-if="login">
       <div class="popin-dialog-close" @click="$emit('hideLogin', false)">
         <i class="fas fa-times"></i>
       </div>
@@ -43,6 +43,11 @@
             Rester connecté
           </label>
         </div>
+        <div>
+          <a role="button" class="text-primary forgot-password" @click="login = false">
+            Mot de passe oublié?
+          </a>
+        </div>
         <button type="submit" id="submit" class="popin-btn btn btn-primary btn-block">
           Connexion
         </button>
@@ -52,6 +57,45 @@
           @click="$emit('hideLogin', false)"
         >
           Retour
+        </button>
+      </form>
+    </div>
+
+    <!-- Reset Password -->
+
+    <div class="popin-dialog" v-else>
+      <div class="popin-dialog-close" @click="$emit('hideLogin', false)">
+        <i class="fas fa-times"></i>
+      </div>
+      <span class="h1">Mot de passe Oublié</span>
+      <form @submit.prevent="sendMail">
+        <div class="alert alert-danger" role="alert" v-if="errorMessage">
+          {{ errorMessage }}
+        </div>
+        <div class="alert alert-success" role="alert" v-if="successMessage">
+          {{ successMessage }}
+        </div>
+        <div class="form-group">
+          <label for="username">
+            Adresse email
+          </label>
+          <input
+            type="email"
+            class="form-control"
+            id="username"
+            name="username"
+            v-model="username"
+          />
+        </div>
+        <button type="submit" id="submit" class="popin-btn btn btn-primary btn-block">
+          Envoyer un e-mail
+        </button>
+        <button
+          type="button"
+          class="popin-btn btn btn-secondary btn-block"
+          @click="$emit('hideLogin', false)"
+        >
+          Annuler
         </button>
       </form>
     </div>
@@ -73,11 +117,13 @@ export default {
       password: "",
       stayConnect: true,
       errorMessage: null,
-      loading: false
+      loading: false,
+      login: true,
+      successMessage: null
     };
   },
   methods: {
-    ...mapActions("user", ["getAuthToken"]),
+    ...mapActions("user", ["getAuthToken", "sendResetPassword"]),
     async checkForm() {
       this.loading = true;
       const { username, password, stayConnect } = this;
@@ -86,10 +132,22 @@ export default {
         await this.getAuthToken({ username, password, stayConnect });
         this.$emit("hideLogin", false);
       } catch (e) {
-        if (e.response && e.response.data && e.response.data.code === 401) {
+        if (e.response && e.response.data && e.response.status === 401) {
           this.errorMessage = e.response.data.message;
-        } else {
-          console.error(e);
+        }
+      }
+      this.loading = false;
+    },
+    async sendMail() {
+      this.loading = true;
+      this.successMessage = null;
+      this.errorMessage = null;
+      try {
+        await this.sendResetPassword({ email: this.username });
+        this.successMessage = "Un e-mail vient de vous être envoyé.";
+      } catch (e) {
+        if (e.response && e.response.data && e.response.status === 401) {
+          this.errorMessage = e.response.data.message;
         }
       }
       this.loading = false;
@@ -108,6 +166,9 @@ export default {
 .login {
   .popin-btn {
     margin-top: $wd-margin-large;
+  }
+  .forgot-password {
+    cursor: pointer;
   }
 }
 </style>

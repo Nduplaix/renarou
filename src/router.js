@@ -17,6 +17,7 @@ import Error404 from "./views/Error404";
 import CommandConfirm from "./views/CommandConfirm";
 import Command from "./views/Command";
 import EmailActivation from "./views/EmailActivation";
+import ResetPassword from "./views/ResetPassword";
 
 Vue.use(Router);
 
@@ -130,6 +131,11 @@ export default new Router({
       path: "/activation",
       name: "email-activation",
       component: EmailActivation
+    },
+    {
+      path: "/mot-de-passe",
+      name: "reset-password",
+      component: ResetPassword
     }
   ]
 });
