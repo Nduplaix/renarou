@@ -1,0 +1,21 @@
+@mixin animation ($label, $time) {
+  animation: $label $time;
+  -moz-animation: $label $time; /* Firefox */
+  -webkit-animation: $label $time; /* Safari et Chrome */
+  -o-animation: $label $time; /* Opera */
+}
+
+@mixin keyframes ($label) {
+  @keyframes #{$label} {
+    @content;
+  }
+  @-moz-keyframes #{$label} { /* sur Firefox */
+    @content;
+  }
+  @-webkit-keyframes #{$label} { /* sur Safari et Chrome */
+    @content;
+  }
+  @-o-keyframes #{$label} { /* sur Opera */
+    @content;
+  }
+}

@@ -1,8 +1,12 @@
 <template>
-  <div id="app" class="app">
-    <NavBar @showLogin="updateDisplayLogin" @showRegister="updateDisplayRegister"/>
+  <div id="app" class="app preload">
+    <NavBar @showLogin="updateDisplayLogin" @showRegister="updateDisplayRegister" />
     <router-view @openLogin="updateDisplayLogin" />
-    <register v-if="showRegister" @hideRegister="updateDisplayRegister" @openLogin="showLogin = true" />
+    <register
+      v-if="showRegister"
+      @hideRegister="updateDisplayRegister"
+      @openLogin="showLogin = true"
+    />
     <login v-if="showLogin" @hideLogin="updateDisplayLogin" @openRegister="showRegister = true" />
   </div>
 </template>
@@ -35,5 +39,11 @@ export default {
       this.showRegister = toShow;
     }
   }
+};
+
+let app = document.getElementById("app");
+
+app.onload = () => {
+  app.classList.remove("preload");
 };
 </script>
