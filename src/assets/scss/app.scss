@@ -1,6 +1,7 @@
 @import 'bootstrap/custom';
 @import 'fontawesome/custom';
 @import 'variables';
+@import "common/mixins";
 @import "common/animations";
 @import "components/popin";
 @import "components/form";
@@ -29,6 +30,13 @@ body {
 
     .nav-link--mobile {
       font-size: $wd-h2-font-size;
+    }
+
+    &.preload * {
+      -webkit-transition: none !important;
+      -moz-transition: none !important;
+      -ms-transition: none !important;
+      -o-transition: none !important;
     }
   }
 }

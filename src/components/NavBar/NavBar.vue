@@ -23,9 +23,9 @@
       class="collapse navbar-collapse"
       id="navbarSupportedContent"
       :class="{
-        'collapse-mobile': isMobile()
+        'collapse-mobile': isMobile(),
+        'go-top': !displayMenu
       }"
-      v-if="displayMenu"
     >
       <div v-if="isMobile()" class="mb-3 item-close text-center">
         <a type="button" class="btn btn-secondary" @click="displayMenu = false">
@@ -150,6 +150,7 @@ export default {
 
 <style lang="scss" scoped>
 @import "../../assets/scss/variables";
+@import "../../assets/scss/common/mixins";
 
 .item-link {
   color: rgba(0, 0, 0, 0.5);
@@ -163,6 +164,38 @@ nav {
 
   .collapse-mobile {
     height: calc(101vh - #{$wd-navbar-height});
+    position: relative;
+    bottom: 0;
+    @include animation(heightAnimation, 1s);
+  }
+
+  .go-top {
+    height: 0;
+    position: relative;
+    bottom: 100vh;
+    @include animation(goTop, 1s);
+  }
+
+  @include keyframes(heightAnimation) {
+    from {
+      height: 0;
+      bottom: 100vh;
+    }
+    to {
+      height: calc(101vh - #{$wd-navbar-height});
+      bottom: 0;
+    }
+  }
+
+  @include keyframes(goTop) {
+    from {
+      height: calc(101vh - #{$wd-navbar-height});
+      bottom: 0;
+    }
+    to {
+      height: 0;
+      bottom: 100vh;
+    }
   }
 
   .item-close {

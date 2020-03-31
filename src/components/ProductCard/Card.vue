@@ -23,7 +23,6 @@
         <div
           class="image-hover_opacity"
           :class="displayHover ? 'fadein' : 'fadeout'"
-          v-if="displayHover"
         >
           <router-link
             :to="{
