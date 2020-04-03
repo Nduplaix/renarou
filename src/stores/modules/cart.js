@@ -1,3 +1,5 @@
+import {productsApi} from "../../lib/apis";
+
 function updateBasket(basket) {
   let price = 0;
   let totalDiscount = 0;
@@ -35,11 +37,13 @@ const state = {
         productCount: 0,
         totalDiscount: 0,
         totalWithDiscount: 0
-      }
+      },
+  discountCode: null
 };
 
 const getters = {
-  getBasket: state => state.basket
+  getBasket: state => state.basket,
+  discountCode: state => state.discountCode
 };
 
 const mutations = {
@@ -77,6 +81,9 @@ const mutations = {
     state.basket.basketLines[index].quantity = quantity;
     updateBasket(state.basket);
     localStorage.setItem("cart", JSON.stringify(state.basket));
+  },
+  setDiscountCode(state, response) {
+    state.discountCode = response.data;
   }
 };
 
@@ -94,6 +101,12 @@ const actions = {
   },
   updateCartQuantity({ commit }, { index, quantity }) {
     commit("updateCartLineQuantity", { index, quantity });
+  },
+  async fetchDiscountCode({ commit }, { code }) {
+    commit("setDiscountCode", await productsApi.post("/submit-discount", { code }));
+  },
+  cancelDiscountCode({ commit }) {
+    commit("setDiscountCode", { data: null });
   }
 };
 

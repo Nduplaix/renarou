@@ -42,11 +42,17 @@ const actions = {
 
     commit("setPaymentIntent", intent);
   },
-  async createCommand({ dispatch }, { deliveryId, addressId }) {
-    const command = await productsApi.post("/create-commande", {
+  async createCommand({ dispatch }, { deliveryId, addressId, discountId }) {
+    let data = {
       delivery: `/api/deliveries/${deliveryId}`,
       address: `/api/addresses/${addressId}`
-    });
+    };
+
+    if (null !== discountId) {
+      data.discountCode = `/api/discount_codes/${discountId}`;
+    }
+
+    const command = await productsApi.post("/create-commande", data);
 
     dispatch("user/fetchCurrentUser", null, { root: true });
 
