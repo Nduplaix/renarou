@@ -12,6 +12,26 @@
       <div class="command-confirm p-3 m-3 text-center">
         <div v-if="currentUser && deliveryMode && deliveryModes">
           <span class="h1">Informations de la commandes</span>
+          <form
+            class="col-md-6 offset-md-3 mt-5"
+            v-if="null === discountCode"
+            @submit.prevent="submitDiscountCode"
+          >
+            <div class="form-group">
+              <input
+                type="text"
+                class="form-control"
+                placeholder="CODE PROMO"
+                v-model="internalDiscountCode"
+              />
+            </div>
+            <div v-if="discountCodeError" class="text-danger">
+              <p>{{ discountCodeError }}</p>
+            </div>
+            <div class="form-group">
+              <button type="submit" class="btn btn-primary">Valider le code promo</button>
+            </div>
+          </form>
           <div class="form-group col-md-6 offset-md-3">
             <label for="delivery-mode">Mode de livraison</label>
             <select
@@ -52,9 +72,18 @@
               <span v-else><span class="font-weight-bold text-primary">Gratuit</span></span>
             </p>
             <p>Réduction sur la commande : {{ currentUser.basket.totalDiscount | toCurrency }}</p>
+            <p v-if="discountCode && discountCode.isPercent">
+              Code promo: - {{ discountCode.amount }} %
+            </p>
+            <p v-else-if="discountCode">Code promo: - {{ discountCode.amount | toCurrency }}</p>
             <p>
               Prix total de la commande :
-              <span v-if="currentUser.basket.price === currentUser.basket.totalWithDiscount">
+              <span
+                v-if="
+                  currentUser.basket.price === currentUser.basket.totalWithDiscount &&
+                    discountCode === null
+                "
+              >
                 {{
                   (currentUser.basket.totalWithDiscount +
                     getDeliveryFromId(this.deliveryMode).shippingPrice)
@@ -69,11 +98,7 @@
                   }}
                 </span>
                 <span class="new-price">
-                  {{
-                    (currentUser.basket.totalWithDiscount +
-                      getDeliveryFromId(this.deliveryMode).shippingPrice)
-                      | toCurrency
-                  }}
+                  {{ totalPrice() | toCurrency }}
                 </span>
               </span>
             </p>
@@ -96,7 +121,23 @@
             <div id="card-errors" role="alert" class="my-3"></div>
           </div>
 
-          <button id="submit" class="btn btn-primary my-3">Valider et payer</button>
+          <div class="form-group col-md-6 offset-md-3">
+            <button id="submit" class="btn btn-primary my-3">Valider et payer</button>
+          </div>
+          <div class="form-group col-md-6 offset-md-3" v-if="null !== discountCode">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              @click="
+                () => {
+                  this.cancelDiscountCode();
+                  showSuccessDiscount = false;
+                }
+              "
+            >
+              Annuler le code promo
+            </button>
+          </div>
         </div>
       </div>
     </form>
@@ -110,7 +151,14 @@
     >
       Ajouter une adresse
     </address-form>
-    <loading v-if="loading"/>
+    <loading v-if="loading" />
+    <validation-pop-up
+      type="success"
+      v-if="showSuccessDiscount"
+      @close="showSuccessDiscount = false"
+    >
+      Votre code promo est bien pris en compte
+    </validation-pop-up>
   </div>
 </template>
 
@@ -130,10 +178,13 @@ export default {
   },
   computed: {
     ...mapGetters("user", ["currentUser"]),
-    ...mapGetters("command", ["deliveryModes", "paymentIntent"])
+    ...mapGetters("command", ["deliveryModes", "paymentIntent"]),
+    ...mapGetters("cart", ["discountCode"])
   },
   data() {
     return {
+      internalDiscountCode: null,
+      discountCodeError: null,
       deliveryAddress: null,
       deliveryMode:
         typeof localStorage.getItem("delivery") !== "undefined"
@@ -159,7 +210,8 @@ export default {
         }
       ],
       showAddressForm: false,
-      loading: false
+      loading: false,
+      showSuccessDiscount: false,
     };
   },
   watch: {
@@ -196,6 +248,7 @@ export default {
       "createCommand",
       "updateCommand"
     ]),
+    ...mapActions("cart", ["fetchDiscountCode", "cancelDiscountCode"]),
     async submitCommand() {
       this.loading = true;
       if (this.deliveryMode === 2 && this.currentPayment === 2) {
@@ -240,9 +293,7 @@ export default {
     async continuePayment() {
       try {
         await this.createPayment({
-          amount:
-            this.currentUser.basket.totalWithDiscount +
-            this.getDeliveryFromId(this.deliveryMode).shippingPrice,
+          amount: this.totalPrice(),
           user: this.currentUser
         });
 
@@ -263,7 +314,6 @@ export default {
       } catch (e) {
         this.loading = false;
         this.commandError = true;
-        console.log(e);
         if (e.data) {
           console.error(e);
           this.errorMessage = e.data.message;
@@ -276,8 +326,6 @@ export default {
     async paymentSuccess(result) {
       if (result.error) {
         this.loading = false;
-        // Show error to your customer
-        console.log(result.error.message);
         this.commandError = true;
         this.errorMessage = result.error.message;
       } else {
@@ -295,6 +343,7 @@ export default {
     },
     async sendCommand() {
       const command = await this.createCommand({
+        discountId: this.discountCode ? this.discountCode.id : null,
         deliveryId: this.deliveryMode,
         addressId: this.deliveryAddress
       });
@@ -304,6 +353,31 @@ export default {
     updateDeliveryAddress() {
       this.currentPayment = 1;
       localStorage.setItem("delivery", this.deliveryMode);
+    },
+    async submitDiscountCode() {
+      this.discountCodeError = null;
+      try {
+        await this.fetchDiscountCode({ code: this.internalDiscountCode });
+        this.showSuccessDiscount = true;
+      } catch (e) {
+        if (e.response && e.response.data && e.response.status === 401) {
+          this.discountCodeError = e.response.data.message;
+        }
+      }
+    },
+    totalPrice() {
+      let commandPrice = this.currentUser.basket.totalWithDiscount;
+
+      if (this.discountCode && this.discountCode.isPercent) {
+        let discount = Math.round(commandPrice * this.discountCode.amount) / 100;
+
+        commandPrice = Math.round((commandPrice - discount) * 100) / 100;
+      } else if (this.discountCode) {
+        commandPrice = commandPrice - this.discountCode.amount;
+      }
+
+      commandPrice += this.getDeliveryFromId(this.deliveryMode).shippingPrice;
+      return commandPrice;
     }
   }
 };
