@@ -25,7 +25,7 @@
           {{ subCategory.label }}
         </button>
         <hr />
-        <button class="dropdown-item" @click="categoryPush">
+        <button class="dropdown-item" @click="categoryPush(category)">
           Tout
         </button>
       </div>
