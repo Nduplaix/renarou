@@ -10,7 +10,7 @@
           id="email"
           class="form-control disabled"
           disabled
-          :value="currentUser.lastName"
+          :value="currentUser.email"
         />
       </div>
       <div class="form-group">
@@ -30,7 +30,7 @@
           class="form-control disabled"
           id="lastName"
           disabled
-          :value="currentUser.email"
+          :value="currentUser.lastName"
         />
       </div>
     </div>

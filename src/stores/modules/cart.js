@@ -6,10 +6,12 @@ function updateBasket(basket) {
   let productCount = basket.basketLines.length;
 
   basket.basketLines.forEach(elem => {
+    elem.totalPrice = elem.reference.product.price * elem.quantity;
     price += elem.totalPrice;
     totalDiscount += elem.reference.product.discount
       ? elem.totalPrice - (elem.totalPrice * elem.reference.product.discount) / 100
       : 0;
+    elem.totalWithDiscount = elem.totalPrice - totalDiscount;
   });
 
   basket.price = price;
@@ -90,6 +92,7 @@ const mutations = {
 const actions = {
   addCartLine({ commit }, { reference, quantity, product }) {
     reference.product = {
+      label: product.label,
       price: product.price,
       discount: product.discount,
       images: product.images

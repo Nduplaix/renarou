@@ -133,7 +133,7 @@ export default {
         this.$emit("hideLogin", false);
       } catch (e) {
         if (e.response && e.response.data && e.response.status === 401) {
-          this.errorMessage = e.response.data.message;
+          this.errorMessage = "Identifiants incorrect";
         }
       }
       this.loading = false;

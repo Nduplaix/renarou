@@ -108,7 +108,7 @@
           <span class="h1">Paiement</span>
           <div class="form-group col-md-4 offset-md-4" v-if="deliveryMode === 2">
             <label for="payment-select">Moyen de paiement</label>
-            <select v-model="currentPayment" class="form-control" id="payment-select">
+            <select v-model="currentPayment" class="form-control" id="payment-select" v-if="payments">
               <option :value="payment.id" v-for="(payment, index) in payments" :key="index">
                 {{ payment.label }}
               </option>
@@ -216,14 +216,18 @@ export default {
   },
   watch: {
     currentUser: function() {
-      this.deliveryAddress = this.currentUser.addresses[0].id;
+      this.deliveryAddress = this.currentUser.addresses.length
+        ? this.currentUser.addresses[0].id
+        : null;
     }
   },
   mounted() {
     this.getDeliveryModes();
 
     if (this.currentUser && this.currentUser.addresses) {
-      this.deliveryAddress = this.currentUser.addresses[0].id;
+      this.deliveryAddress = this.currentUser.addresses.length
+        ? this.currentUser.addresses[0].id
+        : null;
     }
 
     this.stripe = Stripe(this.stripePublicKey);
@@ -251,6 +255,7 @@ export default {
     ...mapActions("cart", ["fetchDiscountCode", "cancelDiscountCode"]),
     async submitCommand() {
       this.loading = true;
+
       if (this.deliveryMode === 2 && this.currentPayment === 2) {
         try {
           await this.sendCommand();
@@ -261,6 +266,13 @@ export default {
           this.errorMessage = e.response.data.message;
         }
       } else {
+        if (this.deliveryMode === 1 && this.deliveryAddress === null) {
+          this.commandError = true;
+          this.loading = false;
+          this.errorMessage = "Veuillez renseigener une addresse de livraison";
+          return ;
+        }
+
         await this.stripe
           .createPaymentMethod({
             type: "card",
@@ -345,7 +357,7 @@ export default {
       const command = await this.createCommand({
         discountId: this.discountCode ? this.discountCode.id : null,
         deliveryId: this.deliveryMode,
-        addressId: this.deliveryAddress
+        addressId: this.deliveryAddress || null
       });
 
       return command.id;

@@ -96,8 +96,6 @@ export default {
         } catch (e) {
           if (e.response && e.response.data && e.response.status === 401) {
             this.registerErrors.push(e.response.data.message);
-          } else {
-            console.error(e);
           }
         }
       }
