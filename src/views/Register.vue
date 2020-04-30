@@ -41,6 +41,14 @@
               v-model="confirmPassword"
             />
           </div>
+          <div class="form-group">
+            <vue-recaptcha
+              :sitekey="sitekey"
+              @verify="captchaValid = true"
+              @expired="captchaValid = false"
+              @error="captchaValid = false"
+            ></vue-recaptcha>
+          </div>
           <div class="form-group d-flex justify-content-center">
             <button type="submit" class="btn popin-btn btn-block btn-primary">
               Enregister mon profile
@@ -65,9 +73,10 @@
 <script>
 import { mapActions } from "vuex";
 import { AddressForm } from "../components/Form";
+import VueRecaptcha from "vue-recaptcha";
 
 export default {
-  components: { AddressForm },
+  components: { AddressForm, VueRecaptcha },
   data() {
     return {
       currentStep: 1,
@@ -78,7 +87,9 @@ export default {
       lastName: "",
       password: "",
       confirmPassword: "",
-      registerErrors: []
+      captchaValid: false,
+      registerErrors: [],
+      sitekey: process.env.VUE_APP_GOOGLE_RECAPTCHA_SITE_KEY
     };
   },
   methods: {
@@ -102,7 +113,12 @@ export default {
     },
     registerIsValid() {
       let isValid = true;
+      this.registerErrors = [];
 
+      if (this.captchaValid === false) {
+        this.registerErrors.push("Veuillez vérifier que vous n'êtes pas robot");
+        isValid = false;
+      }
       if (this.email === "") {
         this.registerErrors.push("L'email est requis");
         isValid = false;
