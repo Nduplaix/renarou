@@ -45,7 +45,7 @@ const actions = {
   async createCommand({ dispatch }, { deliveryId, addressId, discountId }) {
     let data = {
       delivery: `/api/deliveries/${deliveryId}`,
-      address: `/api/addresses/${addressId}`
+      address: addressId ? `/api/addresses/${addressId}` : null
     };
 
     if (null !== discountId) {
